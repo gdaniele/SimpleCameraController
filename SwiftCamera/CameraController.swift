@@ -8,8 +8,16 @@
 
 import AVFoundation
 import AssetsLibrary
-import Foundation
+import UIKit
 
-class CameraController {
+protocol CameraController {
+	func addCameraPreviewToView(previewView: UIView)
+}
+
+class AVFoundationCameraController: CameraController {
 	
+	// MARK:- Public API
+	func addCameraPreviewToView(previewView: UIView) {
+		// TODO: Implementation
+	}
 }
