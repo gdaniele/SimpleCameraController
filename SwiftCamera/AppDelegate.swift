@@ -13,13 +13,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
 	var window: UIWindow?
 
-
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		window?.rootViewController = ExampleViewController()
+		window?.rootViewController = ExampleViewController(cameraController: AVFoundationCameraController())
 		window?.makeKeyAndVisible()
 		
 		return true
 	}
 }
-

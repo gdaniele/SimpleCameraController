@@ -8,7 +8,6 @@
 
 /* Begin PBXBuildFile section */
 		B3C96B6C1C13912700934437 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B6B1C13912700934437 /* AppDelegate.swift */; };
-		B3C96B6E1C13912700934437 /* MasterViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B6D1C13912700934437 /* MasterViewController.swift */; };
 		B3C96B781C13912700934437 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3C96B761C13912700934437 /* LaunchScreen.storyboard */; };
 		B3C96B801C13916C00934437 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B7F1C13916C00934437 /* CameraController.swift */; };
 		B3C96B821C1391E300934437 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B811C1391E300934437 /* ExampleViewController.swift */; };
@@ -17,7 +16,6 @@
 /* Begin PBXFileReference section */
 		B3C96B681C13912700934437 /* SwiftCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3C96B6B1C13912700934437 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		B3C96B6D1C13912700934437 /* MasterViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MasterViewController.swift; sourceTree = "<group>"; };
 		B3C96B771C13912700934437 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B3C96B791C13912700934437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B3C96B7F1C13916C00934437 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
@@ -55,7 +53,6 @@
 			isa = PBXGroup;
 			children = (
 				B3C96B6B1C13912700934437 /* AppDelegate.swift */,
-				B3C96B6D1C13912700934437 /* MasterViewController.swift */,
 				B3C96B761C13912700934437 /* LaunchScreen.storyboard */,
 				B3C96B791C13912700934437 /* Info.plist */,
 				B3C96B7F1C13916C00934437 /* CameraController.swift */,
@@ -133,7 +130,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3C96B6E1C13912700934437 /* MasterViewController.swift in Sources */,
 				B3C96B821C1391E300934437 /* ExampleViewController.swift in Sources */,
 				B3C96B801C13916C00934437 /* CameraController.swift in Sources */,
 				B3C96B6C1C13912700934437 /* AppDelegate.swift in Sources */,
