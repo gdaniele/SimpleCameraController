@@ -8,13 +8,20 @@ import AVFoundation
 import Photos
 import UIKit
 
+public enum CameraControllerError: ErrorType {
+	case NoVideoDevice
+}
+
 public protocol CameraController {
 	// Properties
 	var flashMode: AVCaptureFlashMode { get set }
 	var setupResult: CameraControllerSetupResult { get }
 	
-	// API
+	// Internal API
 	func addCameraPreviewToView(previewView: UIView)
+	func startVideoRecording()
+	func stopVideoRecording()
+	func takePhoto()
 }
 
 /*!
@@ -52,6 +59,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	// State
 	private let captureFlashMode: AVCaptureFlashMode = .Off
 	
+	// Utilities
+	private var backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
+	private var sessionRunning: Bool = false
+
 	init(configurationFailedErrorBlock: (()->())?, notAuthorizedErrorBlock: (()-> ())?) {
 		// Create session
 		self.session = AVCaptureSession()
@@ -63,7 +74,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		self.checkAuthorizationStatus(notAuthorizedErrorBlock)
 		
 		// Set up the capture session
-		
+		self.setCaptureSession()
 	}
 	
 	// MARK:- Public Properties
@@ -81,9 +92,31 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	}
 	
 	public var setupResult: CameraControllerSetupResult = .Success
-
 	
-	// MARK:- Public API
+	// MARK:- Public Class API
+	
+	// Returns an AVCAptureDevice with the given media type. Throws an error if not available. Note that if a device with preferredPosition is not available, the first available device is returned.
+	public class func deviceWithMediaType(mediaType: String, preferredPosition: AVCaptureDevicePosition) throws -> AVCaptureDevice {
+		// Fallback if device with preferred position not available
+		let devices = AVCaptureDevice.devicesWithMediaType(mediaType)
+		let defaultDevice = devices.first
+		let preferredDevice = devices.filter { device in
+			device.position == preferredPosition
+		}.first
+	
+		guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice) where preferredDevice is AVCaptureDevice else {
+			
+			guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice) where defaultDevice is AVCaptureDevice else {
+				throw CameraControllerError.NoVideoDevice
+			}
+			
+			return uDefaultDevice
+		}
+	
+		return uPreferredDevice
+	}
+	
+	// MARK:- Public Instance API
 	
 	public func addCameraPreviewToView(previewView: UIView) {
 		guard let capturePreviewLayer = previewView.layer as? AVCaptureVideoPreviewLayer else {
@@ -91,6 +124,18 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			return
 		}
 		capturePreviewLayer.session = self.session
+	}
+	
+	public func startVideoRecording() {
+		
+	}
+	
+	public func stopVideoRecording() {
+		
+	}
+	
+	public func takePhoto() {
+		
 	}
 	
 	// MARK:- Private API
@@ -117,11 +162,24 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { granted in
 			dispatch_resume(self.sessionQueue)
 
-			guard !granted else {
+			guard granted else {
 				notAuthorizedErrorBlock?()
 				self.setupResult = .NotAuthorized
 				return
 			}
+		})
+	}
+	
+	// Sets up the capture session. Note: AVCaptureSession.startRunning is synchronous and might take a while to execute. For this reason, we start the session on the coordinated shared `sessionQueue` (and use that queue to access the camera in any further actions)
+	private func setCaptureSession() {
+		dispatch_async(self.sessionQueue, { () in
+			guard self.setupResult == .Success else {
+				return
+			}
+			
+			self.backgroundRecordingID = UIBackgroundTaskInvalid
+
+			
 		})
 	}
 	

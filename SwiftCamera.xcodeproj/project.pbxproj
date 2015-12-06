@@ -33,6 +33,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B3339F211C14FA8600FBFAA9 /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B3C96B791C13912700934437 /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
 		B3C96B5F1C13912700934437 = {
 			isa = PBXGroup;
 			children = (
@@ -52,9 +60,9 @@
 		B3C96B6A1C13912700934437 /* SwiftCamera */ = {
 			isa = PBXGroup;
 			children = (
+				B3339F211C14FA8600FBFAA9 /* Supporting Files */,
 				B3C96B6B1C13912700934437 /* AppDelegate.swift */,
 				B3C96B761C13912700934437 /* LaunchScreen.storyboard */,
-				B3C96B791C13912700934437 /* Info.plist */,
 				B3C96B7F1C13916C00934437 /* CameraController.swift */,
 				B3C96B811C1391E300934437 /* ExampleViewController.swift */,
 			);
@@ -274,6 +282,7 @@
 				B3C96B7E1C13912700934437 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
