@@ -60,7 +60,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		super.init()
 
 		// Check authorization status
-		self.checkForAuthorizationStatus(notAuthorizedErrorBlock)
+		self.checkAuthorizationStatus(notAuthorizedErrorBlock)
 		
 		// Set up the capture session
 		
@@ -80,7 +80,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		}
 	}
 	
-	public let setupResult: CameraControllerSetupResult = .Success
+	public var setupResult: CameraControllerSetupResult = .Success
 
 	
 	// MARK:- Public API
@@ -95,12 +95,34 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:- Private API
 	
-	private func checkForAuthorizationStatus(notAuthorizedErrorBlock: (()-> ())?) {
-		// TODO: Implement me
+	// Checks video authorization status and updates `setupResult`. Note: audio authorization will be requested automatically when an AVCaptureDeviceInput is created.
+	private func checkAuthorizationStatus(notAuthorizedErrorBlock: (()-> ())?) {
+		switch AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo) {
+		case .NotDetermined:
+			self.requestAccess(notAuthorizedErrorBlock)
+		case .Denied:
+			self.setupResult = .NotAuthorized
+			notAuthorizedErrorBlock?()
+		case .Restricted:
+			self.setupResult = .ConfigurationFailed
+			print("Access to the media device is restricted")
+		default: break
+		}
 	}
 	
-	private func requestAccess() {
-		// TODO: Implement me
+	// Gives user the option to grant video access. Suspends the session queue to avoid asking the user for audio access (via session queue initialization) if video access has not yet been granted.
+	private func requestAccess(notAuthorizedErrorBlock: (()-> ())?) {
+		dispatch_suspend(self.sessionQueue)
+		
+		AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { granted in
+			dispatch_resume(self.sessionQueue)
+
+			guard !granted else {
+				notAuthorizedErrorBlock?()
+				self.setupResult = .NotAuthorized
+				return
+			}
+		})
 	}
 	
 	private func updateFlashMode(flashMode: AVCaptureFlashMode) {
