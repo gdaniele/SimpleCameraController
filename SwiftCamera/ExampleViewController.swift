@@ -13,6 +13,7 @@ class ExampleViewController: UIViewController {
 	private lazy var previewLayer: UIView = {
 		let view = UIView()
 		view.backgroundColor = UIColor.blackColor()
+		view.translatesAutoresizingMaskIntoConstraints = false
 
 		return view
 	}()
