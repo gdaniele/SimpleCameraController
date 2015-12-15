@@ -7,18 +7,22 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		B301816B1C1D408E00CD8376 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B301816A1C1D408E00CD8376 /* Images.xcassets */; };
+		B3338F9A1C1FD65400AAFF0A /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3338F991C1FD65400AAFF0A /* CameraController.swift */; };
 		B3C96B6C1C13912700934437 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B6B1C13912700934437 /* AppDelegate.swift */; };
 		B3C96B781C13912700934437 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3C96B761C13912700934437 /* LaunchScreen.storyboard */; };
-		B3C96B801C13916C00934437 /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B7F1C13916C00934437 /* CameraController.swift */; };
+		B3C96B801C13916C00934437 /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B7F1C13916C00934437 /* AVFoundationCameraController.swift */; };
 		B3C96B821C1391E300934437 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3C96B811C1391E300934437 /* ExampleViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		B301816A1C1D408E00CD8376 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		B3338F991C1FD65400AAFF0A /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		B3C96B681C13912700934437 /* SwiftCamera.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SwiftCamera.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3C96B6B1C13912700934437 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3C96B771C13912700934437 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		B3C96B791C13912700934437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B3C96B7F1C13916C00934437 /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		B3C96B7F1C13916C00934437 /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
 		B3C96B811C1391E300934437 /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -33,6 +37,14 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		B3338F981C1FD63300AAFF0A /* CameraController */ = {
+			isa = PBXGroup;
+			children = (
+				B3338F991C1FD65400AAFF0A /* CameraController.swift */,
+			);
+			name = CameraController;
+			sourceTree = "<group>";
+		};
 		B3339F211C14FA8600FBFAA9 /* Supporting Files */ = {
 			isa = PBXGroup;
 			children = (
@@ -60,11 +72,13 @@
 		B3C96B6A1C13912700934437 /* SwiftCamera */ = {
 			isa = PBXGroup;
 			children = (
+				B3338F981C1FD63300AAFF0A /* CameraController */,
 				B3339F211C14FA8600FBFAA9 /* Supporting Files */,
 				B3C96B6B1C13912700934437 /* AppDelegate.swift */,
 				B3C96B761C13912700934437 /* LaunchScreen.storyboard */,
-				B3C96B7F1C13916C00934437 /* CameraController.swift */,
+				B3C96B7F1C13916C00934437 /* AVFoundationCameraController.swift */,
 				B3C96B811C1391E300934437 /* ExampleViewController.swift */,
+				B301816A1C1D408E00CD8376 /* Images.xcassets */,
 			);
 			path = SwiftCamera;
 			sourceTree = "<group>";
@@ -128,6 +142,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3C96B781C13912700934437 /* LaunchScreen.storyboard in Resources */,
+				B301816B1C1D408E00CD8376 /* Images.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -139,7 +154,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				B3C96B821C1391E300934437 /* ExampleViewController.swift in Sources */,
-				B3C96B801C13916C00934437 /* CameraController.swift in Sources */,
+				B3C96B801C13916C00934437 /* AVFoundationCameraController.swift in Sources */,
+				B3338F9A1C1FD65400AAFF0A /* CameraController.swift in Sources */,
 				B3C96B6C1C13912700934437 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -245,6 +261,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				INFOPLIST_FILE = SwiftCamera/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.giancarlo.SwiftCamera;
@@ -256,6 +273,7 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = "Brand Assets";
 				INFOPLIST_FILE = SwiftCamera/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.giancarlo.SwiftCamera;

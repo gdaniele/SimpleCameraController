@@ -51,6 +51,14 @@ class ExampleViewController: UIViewController {
 		}
 		
 		// Initializes camera controller
-		self.cameraController.addCameraPreviewToView(self.previewLayer)
+		self.cameraController.connectCameraToView(self.previewLayer, error: { error in
+			
+		})
+	}
+}
+
+extension ExampleViewController: CameraControllerObserver {
+	func updatePropertyWithName(propertyName: String, value: AnyObject?) {
+		print("\(self.self) recieved \(propertyName): \(value)")
 	}
 }

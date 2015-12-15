@@ -15,7 +15,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
 
 	func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
 		self.window = UIWindow(frame: UIScreen.mainScreen().bounds)
-		window?.rootViewController = ExampleViewController(cameraController: AVFoundationCameraController(configurationFailedErrorBlock: nil, notAuthorizedErrorBlock: nil))
+		window?.rootViewController = ExampleViewController(cameraController: AVFoundationCameraController())
 		window?.makeKeyAndVisible()
 		
 		return true
