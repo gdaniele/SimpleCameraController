@@ -52,7 +52,7 @@ class ExampleViewController: UIViewController {
 		
 		// Initializes camera controller
 		self.cameraController.connectCameraToView(self.previewLayer, error: { error in
-			
+			print("errror")
 		})
 	}
 }
