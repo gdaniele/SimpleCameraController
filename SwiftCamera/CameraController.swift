@@ -46,13 +46,36 @@ public enum CameraControllerSetupResult: String {
 	case ConfigurationFailed = "ConfigurationFailed"
 	case NotAuthorized = "NotAuthorized"
 	case NotDetermined = "NotDetermined"
-	case Success = "Success"
-	case Running = "Running"
 	case Restricted = "Restricted"
+	case Running = "Running"
+	case Success = "Success"
+}
+
+/*!
+@enum CameraOutputMode
+@abstract
+CameraOutputMode represents possibilities for camera output (e.g. still image and video)
+*/
+public enum CameraOutputMode {
+	case StillImage
+	case Video
 }
 
 // MARK:- Errors
 
+/*!
+@error CameraControllerError
+@abstract
+`CameraControllerError` represents CameraController API-level error resulting from incorrect usage.
+
+@discussion
+CameraController successful operation depends on correctly connecting the camera to a previewLayer.
+*/
+public enum CameraControllerError: ErrorType {
+	case ImageCaptureFailed
+	case NotRunning
+	case WrongConfiguration
+}
 
 /*!
 @error CameraControllerPreviewLayerError

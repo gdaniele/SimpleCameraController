@@ -66,6 +66,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	// State
 	private let captureFlashMode: AVCaptureFlashMode = .Off
 	private var observers = WeakSet<CameraControllerObserver>()
+	private var outputMode: CameraOutputMode = .StillImage
 	
 	// Utilities
 	private var backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
@@ -148,8 +149,34 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		
 	}
 	
-	public func takePhoto() {
+	public func takePhoto(error: ((ErrorType)->())?, completion: ((UIImage)->())?) {
+		guard self.setupResult == .Running else {
+			error?(CameraControllerError.NotRunning)
+			return
+		}
 		
+		guard let uStillImageOutput = self.stillImageOutput where self.outputMode == .StillImage else {
+			error?(CameraControllerError.WrongConfiguration)
+			return
+		}
+		
+		dispatch_async(self.sessionQueue, {
+			uStillImageOutput.captureStillImageAsynchronouslyFromConnection(uStillImageOutput.connectionWithMediaType(AVMediaTypeVideo),
+				completionHandler: { imageDataSampleBuffer, receivedError in
+					guard receivedError == nil else {
+						error?(receivedError!)
+						return
+					}
+					if let uImageDataBuffer = imageDataSampleBuffer {
+						let imageData = AVCaptureStillImageOutput.jpegStillImageNSDataRepresentation(uImageDataBuffer)
+						guard let image = UIImage(data: imageData) else {
+							error?(CameraControllerError.ImageCaptureFailed)
+							return
+						}
+						completion?(image)
+					}
+			})
+		})
 	}
 	
 	// MARK:- Private API
@@ -206,7 +233,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
-	// Sets up the capture session. Note: AVCaptureSession.startRunning is synchronous and might take a while to execute. For this reason, we start the session on the coordinated shared `sessionQueue` (and use that queue to access the camera in any further actions)
+	// Sets up the capture session. Assumes that authorization status has
+	// already been checked.
+	// Note: AVCaptureSession.startRunning is synchronous and might take a while to execute. For this reason, we start the session on the coordinated shared `sessionQueue` (and use that queue to access the camera in any further actions)
 	private func setCaptureSessionWithSuccess(success: (()->())?, error: ((CameraControllerVideoDeviceError) -> ())?) {
 		dispatch_async(self.sessionQueue, { () in
 			guard self.setupResult == .Success else {
@@ -242,7 +271,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			// Set preview layer
 			self.setPreviewLayer()
 			
-			// Set stillImageOutput
+			// Set Still Image Output
+			// TODO: In the future, read this info from user config
 			let stillImageOutput = AVCaptureStillImageOutput()
 			
 			if self.session.canAddOutput(stillImageOutput) {
