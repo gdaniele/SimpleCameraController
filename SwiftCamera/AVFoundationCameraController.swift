@@ -131,7 +131,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			uPreviewLayer.removeFromSuperlayer()
 		}
 		
-		if self.setupResult == .Success {
+		if self.setupResult == .Running {
 			self.addPreviewLayerToView(previewView, error: error)
 		} else {
 			self.startCaptureWithSuccess({ () -> () in
@@ -223,6 +223,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			}
 			
 			self.session.beginConfiguration()
+			self.session.sessionPreset = AVCaptureSessionPresetHigh
 			
 			guard self.session.canAddInput(videoDeviceInput) else {
 				error?(CameraControllerVideoDeviceError.SetupFailed)
@@ -287,6 +288,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		
 		// Set up the capture session
 		self.setCaptureSessionWithSuccess({
+			dispatch_async(self.sessionQueue, {
+				self.session.startRunning()
+				self.setupResult = .Running
+			})
 			success?()
 		}, error: { uError in
 			error?(uError)

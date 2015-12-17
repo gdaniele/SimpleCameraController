@@ -47,6 +47,7 @@ public enum CameraControllerSetupResult: String {
 	case NotAuthorized = "NotAuthorized"
 	case NotDetermined = "NotDetermined"
 	case Success = "Success"
+	case Running = "Running"
 	case Restricted = "Restricted"
 }
 
