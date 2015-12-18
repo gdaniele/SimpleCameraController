@@ -183,6 +183,18 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		}
 	}
 	
+	public func stopCaptureSession() {
+		self.session.stopRunning()
+	}
+	
+	public func startCaptureSession() {
+		guard !self.session.running else {
+			print("Session is already running")
+			return
+		}
+		self.session.startRunning()
+	}
+	
 	public func startVideoRecording() {
 		
 	}

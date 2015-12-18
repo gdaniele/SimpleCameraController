@@ -49,6 +49,7 @@ public enum CameraControllerSetupResult: String {
 	case Restricted = "Restricted"
 	case Running = "Running"
 	case Success = "Success"
+	case Stopped = "Stopped"
 }
 
 /*!
