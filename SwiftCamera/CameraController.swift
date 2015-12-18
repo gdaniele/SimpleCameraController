@@ -19,8 +19,8 @@ CameraController provides an easy-to-use api for managing a hardware camera inte
 */
 public protocol CameraController: CameraControllerSubject {
 	// Properties
+	var cameraDevice: CameraDevice { get set }
 	var cameraQuality: CameraQuality { get set }
-	var deviceCamera: CameraDevice { get set }
 	var flashMode: AVCaptureFlashMode { get set }
 	
 	// Internal API
@@ -83,6 +83,20 @@ public enum CameraQuality {
 }
 
 // MARK:- Errors
+
+/*!
+@error CameraControllerError
+@abstract
+`CameraControllerError` represents CameraController API-level error resulting from incorrect usage.
+
+@discussion
+CameraController successful operation depends on correctly connecting the camera to a previewLayer.
+*/
+public enum CameraControllerError: ErrorType {
+	case ImageCaptureFailed
+	case NotRunning
+	case WrongConfiguration
+}
 
 /*!
 @error CameraControllerPreviewLayerError
