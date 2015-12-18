@@ -51,8 +51,19 @@ class ExampleViewController: UIViewController {
 		}
 		
 		// Initializes camera controller
-		self.cameraController.connectCameraToView(self.previewLayer, error: { error in
-			print("errror")
+		self.cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
+			guard didSucceed && error == nil else {
+				print("errror")
+				return
+			}
+			
+			self.cameraController.takePhoto({ image, error in
+				guard let uImage = image where error == nil else {
+					print("received error")
+					return
+				}
+				print("Got pic")
+			})
 		})
 	}
 }

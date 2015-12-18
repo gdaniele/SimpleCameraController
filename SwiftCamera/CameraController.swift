@@ -19,13 +19,13 @@ CameraController provides an easy-to-use api for managing a hardware camera inte
 */
 public protocol CameraController: CameraControllerSubject {
 	// Properties
+	var cameraQuality: CameraQuality { get set }
+	var deviceCamera: CameraDevice { get set }
 	var flashMode: AVCaptureFlashMode { get set }
 	
 	// Internal API
-	func connectCameraToView(previewView: UIView, error: ((ErrorType)-> ())?)
-	func startVideoRecording()
-	func stopVideoRecording()
-	func takePhoto()
+	func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
+	func takePhoto(completion: ((UIImage?, ErrorType?)->())?)
 }
 
 // MARK:- State
@@ -52,6 +52,16 @@ public enum CameraControllerSetupResult: String {
 }
 
 /*!
+@enum CameraDevice
+@abstract
+CameraDevice represents a device camera
+*/
+public enum CameraDevice {
+	case Back
+	case Front
+}
+
+/*!
 @enum CameraOutputMode
 @abstract
 CameraOutputMode represents possibilities for camera output (e.g. still image and video)
@@ -61,21 +71,18 @@ public enum CameraOutputMode {
 	case Video
 }
 
-// MARK:- Errors
-
 /*!
-@error CameraControllerError
+@error CameraQuality
 @abstract
-`CameraControllerError` represents CameraController API-level error resulting from incorrect usage.
-
-@discussion
-CameraController successful operation depends on correctly connecting the camera to a previewLayer.
+`CameraQuality` represents AVCaptureSessionPreset camera quality
 */
-public enum CameraControllerError: ErrorType {
-	case ImageCaptureFailed
-	case NotRunning
-	case WrongConfiguration
+public enum CameraQuality {
+	case High
+	case Medium
+	case Low
 }
+
+// MARK:- Errors
 
 /*!
 @error CameraControllerPreviewLayerError

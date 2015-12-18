@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "SwiftCamera/ExampleViewController.swift"
-            timestampString = "472062923.120181"
+            timestampString = "472145532.576807"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "62"
+            endingLineNumber = "62"
             landmarkName = "setUI()"
             landmarkType = "5">
          </BreakpointContent>
