@@ -19,7 +19,7 @@ CameraController provides an easy-to-use api for managing a hardware camera inte
 */
 public protocol CameraController: CameraControllerSubject {
 	// Properties
-	var cameraDevice: CameraDevice { get set }
+	var cameraDevicePosition: AVCaptureDevicePosition { get set }
 	var cameraQuality: CameraQuality { get set }
 	var flashMode: AVCaptureFlashMode { get set }
 	
@@ -49,16 +49,6 @@ public enum CameraControllerSetupResult: String {
 	case Restricted = "Restricted"
 	case Running = "Running"
 	case Success = "Success"
-}
-
-/*!
-@enum CameraDevice
-@abstract
-CameraDevice represents a device camera
-*/
-public enum CameraDevice {
-	case Back
-	case Front
 }
 
 /*!

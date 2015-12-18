@@ -54,7 +54,7 @@ An AVFoundationCameraController is a CameraController that uses AVFoundation to 
 An AVFoundationCameraController uses the AVFoundation framework to manage a camera session in iOS 9+.
 */
 public class AVFoundationCameraController: NSObject, CameraController {
-	// Session management
+	// MARK:-  Session management
 	private let movieFileOutput: AVCaptureMovieFileOutput? = nil
 	private var previewLayer: AVCaptureVideoPreviewLayer? = nil
 	private weak var previewView: UIView? = nil
@@ -63,15 +63,16 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	private var stillImageOutput: AVCaptureStillImageOutput? = nil
 	private var videoDeviceInput: AVCaptureDeviceInput? = nil
 	
-	// State
+	// MARK:-  State
+	private var availableCaptureDevicePositions: Set<AVCaptureDevicePosition>?
 	private let captureFlashMode: AVCaptureFlashMode = .Off
 	private var observers = WeakSet<CameraControllerObserver>()
 	private var outputMode: CameraOutputMode = .StillImage
 	
-	// Utilities
+	// MARK:-  Utilities
 	private var backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
 	private var sessionRunning: Bool = false
-
+	
 	override init() {
 		// Create session
 		self.session = AVCaptureSession()
@@ -82,12 +83,12 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:- Public Properties
 	
-	public var cameraDevice: CameraDevice = .Back {
+	public var cameraDevicePosition: AVCaptureDevicePosition = .Back {
 		didSet {
-			guard cameraDevice != oldValue else {
+			guard cameraDevicePosition != oldValue else {
 				return
 			}
-			self.updateCameraDevice()
+			try? self.setCameraDevicePosition()
 		}
 	}
 	
@@ -96,7 +97,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			guard cameraQuality != oldValue else {
 				return
 			}
-			self.updateCameraQuality()
+			self.setCameraQuality()
 		}
 	}
 	
@@ -108,13 +109,32 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			guard flashMode != self.captureFlashMode else {
 				return
 			}
-			self.updateFlashMode()
+			self.setFlashMode()
 		}
 	}
 	
 	private(set) public var setupResult: CameraControllerSetupResult = .Success
 	
 	// MARK:- Public Class API
+	
+	public class func availableCaptureDevicePositions(mediaType: String) -> Set<AVCaptureDevicePosition> {
+		return Set(AVCaptureDevice.devicesWithMediaType(mediaType).map { $0.position })
+	}
+	
+	// Returns an AVCAptureDevice with the given media type. Throws an error if not available.
+	public class func deviceWithMediaType(mediaType: String, position: AVCaptureDevicePosition) throws -> AVCaptureDevice? {
+		// Fallback if device with preferred position not available
+		let devices = AVCaptureDevice.devicesWithMediaType(mediaType)
+		let preferredDevice = devices.filter { device in
+			device.position == position
+		}.first
+		
+		guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice) where preferredDevice is AVCaptureDevice else {
+			throw CameraControllerVideoDeviceError.NotFound
+		}
+		
+		return uPreferredDevice
+	}
 	
 	// Returns an AVCAptureDevice with the given media type. Throws an error if not available. Note that if a device with preferredPosition is not available, the first available device is returned.
 	public class func deviceWithMediaType(mediaType: String, preferredPosition: AVCaptureDevicePosition) throws -> AVCaptureDevice {
@@ -130,7 +150,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice) where defaultDevice is AVCaptureDevice else {
 				throw CameraControllerVideoDeviceError.NotFound
 			}
-			
+			print("Could not retrieve device with preferred position. Using default")
 			return uDefaultDevice
 		}
 	
@@ -195,7 +215,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
 							completion?(nil, CameraControllerError.ImageCaptureFailed)
 							return
 						}
-						completion?(image, nil)
+						dispatch_async(dispatch_get_main_queue(), {
+							completion?(image, nil)
+						})
 					}
 			})
 		})
@@ -260,35 +282,48 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
+	private func setCameraDevicePosition() throws {
+		guard self.supportsCameraPosition(self.cameraDevicePosition) else {
+			throw CameraControllerError.WrongConfiguration
+		}
+		// add inputs and commit config
+		self.session.beginConfiguration()
+		guard let videoDevice = try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: self.cameraDevicePosition), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
+			print("Could not get video device")
+			throw CameraControllerVideoDeviceError.SetupFailed
+		}
+		self.session.sessionPreset = AVCaptureSessionPresetHigh
+		
+		guard self.session.canAddInput(videoDeviceInput) else {
+			print("Could not add video device input to the session")
+			throw CameraControllerVideoDeviceError.SetupFailed
+		}
+		
+		self.session.addInput(videoDeviceInput)
+		self.videoDeviceInput = videoDeviceInput
+	}
+	
+	private func setCameraQuality() {
+		// TODO: Implement me
+	}
+	
 	// Sets up the capture session. Assumes that authorization status has
 	// already been checked.
 	// Note: AVCaptureSession.startRunning is synchronous and might take a while to execute. For this reason, we start the session on the coordinated shared `sessionQueue` (and use that queue to access the camera in any further actions)
-	private func setCaptureSessionWithCompletion(completion: ((Bool, CameraControllerVideoDeviceError?) -> ())?) {
+	private func setCaptureSessionWithCompletion(completion: ((Bool, ErrorType?) -> ())?) {
 		dispatch_async(self.sessionQueue, { () in
 			guard self.setupResult == .Success else {
 				completion?(false, CameraControllerVideoDeviceError.NotAuthorized)
 				return
 			}
-			
+			self.availableCaptureDevicePositions = AVFoundationCameraController.availableCaptureDevicePositions(AVMediaTypeVideo)
 			self.backgroundRecordingID = UIBackgroundTaskInvalid
 			
-			guard let videoDevice = try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: AVCaptureDevicePosition.Back), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
-				print("Could not get video device")
-				completion?(false, CameraControllerVideoDeviceError.SetupFailed)
-				return
+			do {
+				try self.setCameraDevicePosition()
+			} catch {
+				completion?(false, error)
 			}
-			
-			self.session.beginConfiguration()
-			self.session.sessionPreset = AVCaptureSessionPresetHigh
-			
-			guard self.session.canAddInput(videoDeviceInput) else {
-				completion?(false, CameraControllerVideoDeviceError.SetupFailed)
-				print("Could not add video device input to the session")
-				return
-			}
-			
-			self.session.addInput(videoDeviceInput)
-			self.videoDeviceInput = videoDeviceInput
 			
 			// Set preview layer
 			self.setPreviewLayer()
@@ -312,6 +347,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			
 			completion?(true, nil)
 		})
+	}
+	
+	private func setFlashMode() {
+		// TODO: Implement me
 	}
 	
 	private func setPreviewLayer() {
@@ -363,16 +402,12 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
-	private func updateCameraDevice() {
-		// TODO: Implement me
-	}
-	
-	private func updateCameraQuality() {
-		// TODO: Implement me
-	}
-	
-	private func updateFlashMode() {
-		// TODO: Implement me
+	private func supportsCameraPosition(postition: AVCaptureDevicePosition) -> Bool {
+		guard let uAvailableDevicePositions = self.availableCaptureDevicePositions else {
+			self.availableCaptureDevicePositions = AVFoundationCameraController.availableCaptureDevicePositions(AVMediaTypeVideo)
+			return self.availableCaptureDevicePositions!.contains(postition)
+		}
+		return uAvailableDevicePositions.contains(postition)
 	}
 }
 
