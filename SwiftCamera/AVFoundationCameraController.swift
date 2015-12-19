@@ -298,6 +298,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		guard self.supportsCameraPosition(self.cameraDevicePosition) else {
 			throw CameraControllerError.WrongConfiguration
 		}
+		
 		// add inputs and commit config
 		self.session.beginConfiguration()
 		guard let videoDevice = try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: self.cameraDevicePosition), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
@@ -306,6 +307,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		}
 		self.session.sessionPreset = AVCaptureSessionPresetHigh
 		
+		if let uVideoDeviceInput = self.videoDeviceInput {
+			self.session.removeInput(uVideoDeviceInput)
+		}
+		
 		guard self.session.canAddInput(videoDeviceInput) else {
 			print("Could not add video device input to the session")
 			throw CameraControllerVideoDeviceError.SetupFailed
@@ -313,6 +318,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		
 		self.session.addInput(videoDeviceInput)
 		self.videoDeviceInput = videoDeviceInput
+		
+		self.session.commitConfiguration()
 	}
 	
 	private func setCameraQuality() {

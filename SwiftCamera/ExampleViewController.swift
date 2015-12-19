@@ -9,7 +9,7 @@
 import UIKit
 
 class ExampleViewController: UIViewController {
-	private let cameraController: CameraController
+	private var cameraController: CameraController
 	private lazy var previewLayer: UIView = {
 		let view = UIView()
 		view.backgroundColor = UIColor.blackColor()
@@ -51,6 +51,8 @@ class ExampleViewController: UIViewController {
 		}
 		
 		// Initializes camera controller
+		self.cameraController.cameraDevicePosition = .Front
+
 		self.cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
 			guard didSucceed && error == nil else {
 				print("errror")
