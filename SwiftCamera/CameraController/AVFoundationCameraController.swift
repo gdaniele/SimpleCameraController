@@ -104,7 +104,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	}
 	
 	// Returns an AVCAptureDevice with the given media type. Throws an error if not available.
-	public class func deviceWithMediaType(mediaType: String, position: AVCaptureDevicePosition) throws -> AVCaptureDevice? {
+	public class func deviceWithMediaType(mediaType: String, position: AVCaptureDevicePosition) throws -> AVCaptureDevice {
 		// Fallback if device with preferred position not available
 		let devices = AVCaptureDevice.devicesWithMediaType(mediaType)
 		let preferredDevice = devices.filter { device in
@@ -132,7 +132,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice) where defaultDevice is AVCaptureDevice else {
 				throw CameraControllerVideoDeviceError.NotFound
 			}
-			print("Could not retrieve device with preferred position. Using default")
 			return uDefaultDevice
 		}
 	
@@ -169,33 +168,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		guard position != self.cameraPosition else {
 			return
 		}
-		guard self.supportsCameraPosition(position) else {
-			throw CameraControllerError.DeviceDoesNotSupportFeature
-		}
-		
-		// add inputs and commit config
-		self.session.beginConfiguration()
-		guard let videoDevice = self.getDevice(position), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
-			print("Could not get video device")
-			throw CameraControllerVideoDeviceError.SetupFailed
-		}
-		self.session.sessionPreset = AVCaptureSessionPresetHigh
-		
-		if let uVideoDeviceInput = self.videoDeviceInput {
-			self.session.removeInput(uVideoDeviceInput)
-		}
-		
-		guard self.session.canAddInput(videoDeviceInput) else {
-			print("Could not add video device input to the session")
-			throw CameraControllerVideoDeviceError.SetupFailed
-		}
-		
-		self.session.addInput(videoDeviceInput)
-		self.videoDeviceInput = videoDeviceInput
-		
-		self.session.commitConfiguration()
-		
-		self.cameraPosition = position
+		try self.setPosition(position)
 	}
 	
 	public func setFlashMode(mode: AVCaptureFlashMode) throws {
@@ -252,6 +225,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 						}
 						dispatch_async(dispatch_get_main_queue(), {
 							completion?(image, nil)
+							return
 						})
 					}
 			})
@@ -261,11 +235,11 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	// MARK:- Private lazy vars
 	
 	private lazy var backCaptureDevice: AVCaptureDevice? = {
-		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: .Back)
+		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .Back)
 	}()
 	
 	private lazy var frontCaptureDevice: AVCaptureDevice? = {
-		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: .Front)
+		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .Front)
 	}()
 	
 	// MARK:- Private API
@@ -282,6 +256,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			previewView.clipsToBounds = true
 			previewView.layer.addSublayer(uPreviewLayer)
 			completion?(true, nil)
+			return
 		}
 	}
 	
@@ -298,8 +273,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			self.setupResult = .ConfigurationFailed
 			completion?(false, CameraControllerVideoDeviceError.SetupFailed)
 			print("Access to the media device is restricted")
+			return
 		default:
 			completion?(true, nil)
+			return
 		}
 	}
 	
@@ -315,8 +292,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		switch position {
 		case .Front:
 			return self.frontCaptureDevice
-		default:
+		case .Back:
 			return self.backCaptureDevice
+		default: return nil
 		}
 	}
 	
@@ -333,6 +311,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 				return
 			}
 			completion?(true, nil)
+			return
 		})
 	}
 	
@@ -354,9 +333,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			self.backgroundRecordingID = UIBackgroundTaskInvalid
 			
 			do {
-				try self.setCameraPosition(self.cameraPosition)
+				try self.setPosition(self.cameraPosition)
 			} catch {
 				completion?(false, error)
+				return
 			}
 			
 			// Set preview layer
@@ -401,6 +381,46 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		uBackDevice.unlockForConfiguration()
 		
 		self.flashMode = mode
+		self.session.commitConfiguration()
+	}
+	
+	private func setPosition(position: AVCaptureDevicePosition) throws {
+		
+		switch position {
+		case .Unspecified:
+			guard let uVideoDevice = try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: position), let uInput = try? AVCaptureDeviceInput(device: uVideoDevice) else {
+				throw CameraControllerVideoDeviceError.SetupFailed
+			}
+			try self.setInputsForVideoDevice(uVideoDevice, input: uInput)
+		default:
+			guard let uVideoDevice = self.getDevice(position), let uInput = try? AVCaptureDeviceInput(device: uVideoDevice) where self.supportsCameraPosition(position) else {
+				print("Could not get video device")
+				throw CameraControllerVideoDeviceError.SetupFailed
+			}
+			try self.setInputsForVideoDevice(uVideoDevice, input: uInput)
+		}
+		
+		self.cameraPosition = position
+	}
+	
+	private func setInputsForVideoDevice(videoDevice: AVCaptureDevice, input: AVCaptureDeviceInput) throws {
+		// add inputs and commit config
+		self.session.beginConfiguration()
+		
+		self.session.sessionPreset = AVCaptureSessionPresetHigh
+		
+		if let uVideoDeviceInput = self.videoDeviceInput {
+			self.session.removeInput(uVideoDeviceInput)
+		}
+		
+		guard self.session.canAddInput(input) else {
+			print("Could not add video device input to the session")
+			throw CameraControllerVideoDeviceError.SetupFailed
+		}
+		
+		self.session.addInput(input)
+		self.videoDeviceInput = input
+		
 		self.session.commitConfiguration()
 	}
 	
@@ -449,6 +469,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 				self.session.startRunning()
 				self.setupResult = .Running
 				completion?(true, nil)
+				return
 			})
 		})
 	}

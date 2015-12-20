@@ -60,12 +60,12 @@ class ExampleViewController: UIViewController {
 		}
 		
 		// Initializes camera controller
-		print("Before connecting, does it have flash? \(cameraController.hasFlash)")
-		print("Before connecting, does it have front camera? \(cameraController.hasFrontCamera)")
-
-		try? self.cameraController.setCameraPosition(.Front)
+//		print("Before connecting, does it have flash? \(cameraController.hasFlash)")
+//		print("Before connecting, does it have front camera? \(cameraController.hasFrontCamera)")
+//		
+//		try? self.cameraController.setCameraPosition(.Front)
 //		try? self.cameraController.setFlashMode(.On)
-		
+//		
 		self.cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
 			guard didSucceed && error == nil else {
 				print("errror")
