@@ -34,6 +34,15 @@ class ExampleViewController: UIViewController {
 		self.setUI()
     }
 	
+	func delay(delay:Double, closure:()->()) {
+		dispatch_after(
+			dispatch_time(
+				DISPATCH_TIME_NOW,
+				Int64(delay * Double(NSEC_PER_SEC))
+			),
+			dispatch_get_main_queue(), closure)
+	}
+	
 	private func setUI() {
 		// Adds previewLayer
 		self.view.addSubview(self.previewLayer)
@@ -51,8 +60,12 @@ class ExampleViewController: UIViewController {
 		}
 		
 		// Initializes camera controller
-		self.cameraController.cameraDevicePosition = .Front
+		print("Before connecting, does it have flash? \(cameraController.hasFlash)")
+		print("Before connecting, does it have front camera? \(cameraController.hasFrontCamera)")
 
+		try? self.cameraController.setCameraPosition(.Front)
+//		try? self.cameraController.setFlashMode(.On)
+		
 		self.cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
 			guard didSucceed && error == nil else {
 				print("errror")

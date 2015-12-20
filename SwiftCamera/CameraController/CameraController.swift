@@ -19,12 +19,16 @@ CameraController provides an easy-to-use api for managing a hardware camera inte
 */
 public protocol CameraController: CameraControllerSubject {
 	// Properties
-	var cameraDevicePosition: AVCaptureDevicePosition { get set }
-	var cameraQuality: CameraQuality { get set }
-	var flashMode: AVCaptureFlashMode { get set }
-	
+	var cameraPosition: AVCaptureDevicePosition { get }
+	var captureQuality: CaptureQuality { get }
+	var flashMode: AVCaptureFlashMode { get }
+	var hasFlash: Bool { get }
+	var hasFrontCamera: Bool { get }
+
 	// Internal API
 	func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
+	func setCameraPosition(position: AVCaptureDevicePosition) throws
+	func setFlashMode(mode: AVCaptureFlashMode) throws
 	func takePhoto(completion: ((UIImage?, ErrorType?)->())?)
 }
 
@@ -63,11 +67,11 @@ public enum CameraOutputMode {
 }
 
 /*!
-@error CameraQuality
+@error CaptureQuality
 @abstract
-`CameraQuality` represents AVCaptureSessionPreset camera quality
+`CaptureQuality` represents AVCaptureSessionPreset camera quality
 */
-public enum CameraQuality {
+public enum CaptureQuality {
 	case High
 	case Medium
 	case Low
@@ -86,6 +90,7 @@ CameraController successful operation depends on correctly connecting the camera
 public enum CameraControllerError: ErrorType {
 	case ImageCaptureFailed
 	case NotRunning
+	case DeviceDoesNotSupportFeature
 	case WrongConfiguration
 }
 

@@ -8,24 +8,18 @@ import AVFoundation
 import Photos
 import UIKit
 
-// TODO:
-// ------
-// * Support output mode (still img vs video)
-// 
-//
-
 // MARK:- Useful Extensions
 
 /*!
-@extension AVCaptureVideoOrientation
+@struct AVCaptureVideoOrientationTransformer
 @abstract
 AVCaptureVideoOrientation is an enum representing the desired orientation of an AVFoundation capture.
 
 @discussion
 `fromUIInterfaceOrientation()` allows easy conversion from the enum representing the current iOS device's UI and the enum representing AVFoundation orientation possibilities.
 */
-extension AVCaptureVideoOrientation {
-	static func fromUIInterfaceOrientation(orientation: UIInterfaceOrientation) throws -> AVCaptureVideoOrientation {
+struct AVCaptureVideoOrientationTransformer {
+	static func AVCaptureVideoOrientationTransformerFromUIInterfaceOrientation(orientation: UIInterfaceOrientation) throws -> AVCaptureVideoOrientation {
 		switch orientation {
 		case .Portrait:
 			return .Portrait
@@ -65,7 +59,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:-  State
 	private var availableCaptureDevicePositions: Set<AVCaptureDevicePosition>?
-	private let captureFlashMode: AVCaptureFlashMode = .Off
+	
 	private var observers = WeakSet<CameraControllerObserver>()
 	private var outputMode: CameraOutputMode = .StillImage
 	
@@ -74,7 +68,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	private var sessionRunning: Bool = false
 	
 	override init() {
-		// Create session
+		self.availableCaptureDevicePositions = AVFoundationCameraController.availableCaptureDevicePositions(AVMediaTypeVideo)
 		self.session = AVCaptureSession()
 		self.sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL)
 		
@@ -83,37 +77,25 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:- Public Properties
 	
-	public var cameraDevicePosition: AVCaptureDevicePosition = .Back {
-		didSet {
-			guard cameraDevicePosition != oldValue else {
-				return
-			}
-			try? self.setCameraDevicePosition()
-		}
-	}
+	public private(set) var cameraPosition: AVCaptureDevicePosition = .Unspecified
 	
-	public var cameraQuality: CameraQuality = .High {
-		didSet {
-			guard cameraQuality != oldValue else {
-				return
-			}
-			self.setCameraQuality()
-		}
-	}
+	public private(set) var captureQuality: CaptureQuality = .High
 	
-	public var flashMode: AVCaptureFlashMode {
+	public private(set) var flashMode: AVCaptureFlashMode = .Off
+	
+	public private(set) var setupResult: CameraControllerSetupResult = .Success
+	
+	public var hasFlash: Bool {
 		get {
-			return self.captureFlashMode
-		}
-		set {
-			guard flashMode != self.captureFlashMode else {
-				return
-			}
-			self.setFlashMode()
+			return self.backCaptureDevice?.hasFlash ?? false
 		}
 	}
 	
-	private(set) public var setupResult: CameraControllerSetupResult = .Success
+	public var hasFrontCamera: Bool {
+		get {
+			return self.availableCaptureDevicePositions?.contains(.Front) ?? false
+		}
+	}
 	
 	// MARK:- Public Class API
 	
@@ -183,6 +165,47 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		}
 	}
 	
+	public func setCameraPosition(position: AVCaptureDevicePosition) throws {
+		guard position != self.cameraPosition else {
+			return
+		}
+		guard self.supportsCameraPosition(position) else {
+			throw CameraControllerError.DeviceDoesNotSupportFeature
+		}
+		
+		// add inputs and commit config
+		self.session.beginConfiguration()
+		guard let videoDevice = self.getDevice(position), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
+			print("Could not get video device")
+			throw CameraControllerVideoDeviceError.SetupFailed
+		}
+		self.session.sessionPreset = AVCaptureSessionPresetHigh
+		
+		if let uVideoDeviceInput = self.videoDeviceInput {
+			self.session.removeInput(uVideoDeviceInput)
+		}
+		
+		guard self.session.canAddInput(videoDeviceInput) else {
+			print("Could not add video device input to the session")
+			throw CameraControllerVideoDeviceError.SetupFailed
+		}
+		
+		self.session.addInput(videoDeviceInput)
+		self.videoDeviceInput = videoDeviceInput
+		
+		self.session.commitConfiguration()
+		
+		self.cameraPosition = position
+	}
+	
+	public func setFlashMode(mode: AVCaptureFlashMode) throws {
+		guard mode != self.flashMode else {
+			return
+		}
+		
+		try self.setFlash(mode)
+	}
+	
 	public func stopCaptureSession() {
 		self.session.stopRunning()
 	}
@@ -235,6 +258,16 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
+	// MARK:- Private lazy vars
+	
+	private lazy var backCaptureDevice: AVCaptureDevice? = {
+		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: .Back)
+	}()
+	
+	private lazy var frontCaptureDevice: AVCaptureDevice? = {
+		return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: .Front)
+	}()
+	
 	// MARK:- Private API
 	
 	// Adds session to preview layer
@@ -278,6 +311,15 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		return true
 	}
 	
+	private func getDevice(position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+		switch position {
+		case .Front:
+			return self.frontCaptureDevice
+		default:
+			return self.backCaptureDevice
+		}
+	}
+	
 	// Gives user the option to grant video access. Suspends the session queue to avoid asking the user for audio access (via session queue initialization) if video access has not yet been granted.
 	private func requestAccess(completion: ((Bool, ErrorType?) -> ())?) {
 		dispatch_suspend(self.sessionQueue)
@@ -294,36 +336,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
-	private func setCameraDevicePosition() throws {
-		guard self.supportsCameraPosition(self.cameraDevicePosition) else {
-			throw CameraControllerError.WrongConfiguration
+	private func setCaptureQuality(quality: CaptureQuality) throws {
+		guard self.captureQuality != quality else {
+			return
 		}
-		
-		// add inputs and commit config
-		self.session.beginConfiguration()
-		guard let videoDevice = try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, preferredPosition: self.cameraDevicePosition), let videoDeviceInput = try? AVCaptureDeviceInput(device: videoDevice) else {
-			print("Could not get video device")
-			throw CameraControllerVideoDeviceError.SetupFailed
-		}
-		self.session.sessionPreset = AVCaptureSessionPresetHigh
-		
-		if let uVideoDeviceInput = self.videoDeviceInput {
-			self.session.removeInput(uVideoDeviceInput)
-		}
-		
-		guard self.session.canAddInput(videoDeviceInput) else {
-			print("Could not add video device input to the session")
-			throw CameraControllerVideoDeviceError.SetupFailed
-		}
-		
-		self.session.addInput(videoDeviceInput)
-		self.videoDeviceInput = videoDeviceInput
-		
-		self.session.commitConfiguration()
-	}
-	
-	private func setCameraQuality() {
-		// TODO: Implement me
 	}
 	
 	// Sets up the capture session. Assumes that authorization status has
@@ -335,11 +351,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 				completion?(false, CameraControllerVideoDeviceError.NotAuthorized)
 				return
 			}
-			self.availableCaptureDevicePositions = AVFoundationCameraController.availableCaptureDevicePositions(AVMediaTypeVideo)
 			self.backgroundRecordingID = UIBackgroundTaskInvalid
 			
 			do {
-				try self.setCameraDevicePosition()
+				try self.setCameraPosition(self.cameraPosition)
 			} catch {
 				completion?(false, error)
 			}
@@ -351,6 +366,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 				completion?(false, CameraControllerVideoDeviceError.SetupFailed)
 				return
 			}
+			
+			try? self.setFlash(self.flashMode)
 			
 			// Set Still Image Output
 			// TODO: In the future, read this info from user config
@@ -368,8 +385,23 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		})
 	}
 	
-	private func setFlashMode() {
-		// TODO: Implement me
+	private func setFlash(mode: AVCaptureFlashMode) throws {
+		self.session.beginConfiguration()
+		
+		guard let uBackDevice = self.backCaptureDevice where uBackDevice.hasFlash else {
+			throw CameraControllerError.DeviceDoesNotSupportFeature
+		}
+		
+		guard uBackDevice.isFlashModeSupported(mode) else {
+			throw CameraControllerError.DeviceDoesNotSupportFeature
+		}
+		
+		try uBackDevice.lockForConfiguration()
+		uBackDevice.flashMode = mode
+		uBackDevice.unlockForConfiguration()
+		
+		self.flashMode = mode
+		self.session.commitConfiguration()
 	}
 	
 	private func setPreviewLayer() {
@@ -389,11 +421,11 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			// which runs on the main thread
 			let currentStatusBarOrientation = UIApplication.sharedApplication().statusBarOrientation
 			
-			guard let newOrientation = try? AVCaptureVideoOrientation.fromUIInterfaceOrientation(currentStatusBarOrientation) else {
-				uPreviewLayer.connection.videoOrientation = .Portrait
+			guard let uConnection = uPreviewLayer.connection, newOrientation = try? AVCaptureVideoOrientationTransformer.AVCaptureVideoOrientationTransformerFromUIInterfaceOrientation(currentStatusBarOrientation) else {
 				return
 			}
-			uPreviewLayer.connection.videoOrientation = newOrientation
+			uConnection.videoOrientation = .Portrait
+			uConnection.videoOrientation = newOrientation
 		})
 	}
 	

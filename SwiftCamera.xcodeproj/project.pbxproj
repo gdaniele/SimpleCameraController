@@ -40,9 +40,10 @@
 		B3338F981C1FD63300AAFF0A /* CameraController */ = {
 			isa = PBXGroup;
 			children = (
+				B3C96B7F1C13916C00934437 /* AVFoundationCameraController.swift */,
 				B3338F991C1FD65400AAFF0A /* CameraController.swift */,
 			);
-			name = CameraController;
+			path = CameraController;
 			sourceTree = "<group>";
 		};
 		B3339F211C14FA8600FBFAA9 /* Supporting Files */ = {
@@ -76,7 +77,6 @@
 				B3339F211C14FA8600FBFAA9 /* Supporting Files */,
 				B3C96B6B1C13912700934437 /* AppDelegate.swift */,
 				B3C96B761C13912700934437 /* LaunchScreen.storyboard */,
-				B3C96B7F1C13916C00934437 /* AVFoundationCameraController.swift */,
 				B3C96B811C1391E300934437 /* ExampleViewController.swift */,
 				B301816A1C1D408E00CD8376 /* Images.xcassets */,
 			);
