@@ -254,7 +254,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			}
 			uPreviewLayer.frame = previewView.layer.bounds
 			previewView.clipsToBounds = true
-			previewView.layer.addSublayer(uPreviewLayer)
+			previewView.layer.insertSublayer(uPreviewLayer, atIndex: 0)
 			completion?(true, nil)
 			return
 		}
