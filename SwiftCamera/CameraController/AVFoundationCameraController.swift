@@ -59,9 +59,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:-  State
 	private var availableCaptureDevicePositions: Set<AVCaptureDevicePosition>?
-	
 	private var observers = WeakSet<CameraControllerObserver>()
 	private var outputMode: CameraOutputMode = .StillImage
+	private var setupResult: CameraControllerSetupResult = .Success
 	
 	// MARK:-  Utilities
 	private var backgroundRecordingID: UIBackgroundTaskIdentifier = UIBackgroundTaskInvalid
@@ -77,13 +77,17 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	
 	// MARK:- Public Properties
 	
+	public var authorizationStatus: AVAuthorizationStatus {
+		get {
+			return AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+		}
+	}
+	
 	public private(set) var cameraPosition: AVCaptureDevicePosition = .Unspecified
 	
 	public private(set) var captureQuality: CaptureQuality = .High
 	
 	public private(set) var flashMode: AVCaptureFlashMode = .Off
-	
-	public private(set) var setupResult: CameraControllerSetupResult = .Success
 	
 	public var hasFlash: Bool {
 		get {
@@ -94,6 +98,21 @@ public class AVFoundationCameraController: NSObject, CameraController {
 	public var hasFrontCamera: Bool {
 		get {
 			return self.availableCaptureDevicePositions?.contains(.Front) ?? false
+		}
+	}
+	
+	public var supportedCameraPositions: Set<AVCaptureDevicePosition> {
+		get {
+			return AVFoundationCameraController.availableCaptureDevicePositions(AVMediaTypeVideo)
+		}
+	}
+	
+	public var supportedFeatures: [CameraSupportedFeature] {
+		get {
+			var supportedFeatures = [CameraSupportedFeature]()
+			if hasFlash { supportedFeatures.append(.Flash) }
+			if hasFrontCamera { supportedFeatures.append(.FrontCamera) }
+			return supportedFeatures
 		}
 	}
 	
@@ -109,7 +128,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		let devices = AVCaptureDevice.devicesWithMediaType(mediaType)
 		let preferredDevice = devices.filter { device in
 			device.position == position
-		}.first
+			}.first
 		
 		guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice) where preferredDevice is AVCaptureDevice else {
 			throw CameraControllerVideoDeviceError.NotFound
@@ -125,8 +144,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		let defaultDevice = devices.first
 		let preferredDevice = devices.filter { device in
 			device.position == preferredPosition
-		}.first
-	
+			}.first
+		
 		guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice) where preferredDevice is AVCaptureDevice else {
 			
 			guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice) where defaultDevice is AVCaptureDevice else {
@@ -134,10 +153,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 			}
 			return uDefaultDevice
 		}
-	
+		
 		return uPreferredDevice
 	}
-
+	
 	// MARK:- Public Instance API
 	
 	public func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?) -> ())?) {
@@ -304,7 +323,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 		
 		AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo, completionHandler: { granted in
 			dispatch_resume(self.sessionQueue)
-
+			
 			guard granted else {
 				self.setupResult = .NotAuthorized
 				completion?(false, CameraControllerVideoDeviceError.NotAuthorized)

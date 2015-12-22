@@ -19,12 +19,15 @@ CameraController provides an easy-to-use api for managing a hardware camera inte
 */
 public protocol CameraController: CameraControllerSubject {
 	// Properties
+	var authorizationStatus: AVAuthorizationStatus { get }
 	var cameraPosition: AVCaptureDevicePosition { get }
 	var captureQuality: CaptureQuality { get }
 	var flashMode: AVCaptureFlashMode { get }
 	var hasFlash: Bool { get }
 	var hasFrontCamera: Bool { get }
-
+	var supportedCameraPositions: Set<AVCaptureDevicePosition> { get }
+	var supportedFeatures: [CameraSupportedFeature] { get }
+	
 	// Internal API
 	func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
 	func setCameraPosition(position: AVCaptureDevicePosition) throws
@@ -78,11 +81,11 @@ public enum CaptureQuality {
 }
 
 /*!
-@enum CameraSupportedFeatures
+@enum CameraSupportedFeature
 @abstract
-CameraSupportedFeatures represents hardware features of CameraController managed camera
+CameraSupportedFeature represents hardware features of CameraController managed camera
 */
-public enum CameraSupportedFeatures {
+public enum CameraSupportedFeature {
 	case Flash
 	case FrontCamera
 }
