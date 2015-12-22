@@ -77,6 +77,16 @@ public enum CaptureQuality {
 	case Low
 }
 
+/*!
+@enum CameraSupportedFeatures
+@abstract
+CameraSupportedFeatures represents hardware features of CameraController managed camera
+*/
+public enum CameraSupportedFeatures {
+	case Flash
+	case FrontCamera
+}
+
 // MARK:- Errors
 
 /*!
