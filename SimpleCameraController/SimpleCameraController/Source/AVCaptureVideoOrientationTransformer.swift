@@ -1,0 +1,45 @@
+//
+//  AVCaptureVideoOrientationTransformer.swift
+//  SimpleCameraController
+//
+//  Created by Giancarlo on 4/15/16.
+//  Copyright © 2016 gdaniele. All rights reserved.
+//
+
+import AVFoundation
+
+// MARK:- Useful Extensions
+
+/*!
+ @struct AVCaptureVideoOrientationTransformer
+ @abstract
+ AVCaptureVideoOrientation is an enum representing the desired orientation of an AVFoundation
+ capture.
+
+ @discussion
+ `fromUIInterfaceOrientation()` allows easy conversion from the enum representing
+ the current iOS device's UI and the enum representing AVFoundation orientation possibilities.
+ */
+struct AVCaptureVideoOrientationTransformer {
+  static func videoOrientationFromUIInterfaceOrientation(orientation: UIInterfaceOrientation)
+    throws -> AVCaptureVideoOrientation {
+    switch orientation {
+    case .Portrait:
+      return .Portrait
+    case .PortraitUpsideDown:
+      return .PortraitUpsideDown
+    case .LandscapeRight:
+      return .LandscapeRight
+    case .LandscapeLeft:
+      return .LandscapeLeft
+    default:
+      throw AVCaptureVideoOrientationConversionError.NotValid
+    }
+  }
+}
+
+// MARK: AVCaptureVideoOrientationConversionError
+
+public enum AVCaptureVideoOrientationConversionError: ErrorType {
+  case NotValid
+}

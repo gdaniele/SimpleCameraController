@@ -1,0 +1,10 @@
+framework module SimpleCameraController {
+  umbrella header "SimpleCameraController.h"
+
+  export *
+  module * { export * }
+}
+
+module SimpleCameraController.Swift {
+    header "SimpleCameraController-Swift.h"
+}
