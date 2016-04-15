@@ -6,8 +6,8 @@
 //  Copyright © 2015 Giancarlo. All rights reserved.
 //
 
-import UIKit
 import SimpleCameraController
+import UIKit
 
 class ExampleViewController: UIViewController {
   private var cameraController: CameraController
@@ -32,19 +32,10 @@ class ExampleViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    self.setUI()
+    setUpUI()
   }
 
-  func delay(delay: Double, closure: ()->()) {
-    dispatch_after(
-      dispatch_time(
-        DISPATCH_TIME_NOW,
-        Int64(delay * Double(NSEC_PER_SEC))
-      ),
-      dispatch_get_main_queue(), closure)
-  }
-
-  private func setUI() {
+  private func setUpUI() {
     // Adds previewLayer
     self.view.addSubview(self.previewLayer)
 
@@ -92,6 +83,8 @@ class ExampleViewController: UIViewController {
     })
   }
 }
+
+// MARK: CameraControllerObserver
 
 extension ExampleViewController: CameraControllerObserver {
   func updatePropertyWithName(propertyName: String, value: AnyObject?) {
