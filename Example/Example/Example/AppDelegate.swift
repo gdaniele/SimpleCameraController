@@ -6,7 +6,6 @@
 //  Copyright © 2016 gdaniele. All rights reserved.
 //
 
-import SimpleCameraController
 import UIKit
 
 @UIApplicationMain
