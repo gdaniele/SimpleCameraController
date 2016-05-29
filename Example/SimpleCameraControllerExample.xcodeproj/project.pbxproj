@@ -9,8 +9,6 @@
 /* Begin PBXBuildFile section */
 		B345ABA21CC13F4300CEC02F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345ABA01CC13F4300CEC02F /* AppDelegate.swift */; };
 		B345ABA31CC13F4300CEC02F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345ABA11CC13F4300CEC02F /* ExampleViewController.swift */; };
-		B345ABAB1CC1411A00CEC02F /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B345ABAA1CC1411A00CEC02F /* SimpleCameraController.framework */; };
-		B345ABAC1CC1411A00CEC02F /* SimpleCameraController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B345ABAA1CC1411A00CEC02F /* SimpleCameraController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -20,7 +18,6 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B345ABAC1CC1411A00CEC02F /* SimpleCameraController.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -30,7 +27,6 @@
 /* Begin PBXFileReference section */
 		B345ABA01CC13F4300CEC02F /* AppDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B345ABA11CC13F4300CEC02F /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
-		B345ABAA1CC1411A00CEC02F /* SimpleCameraController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SimpleCameraController.framework; sourceTree = "<group>"; };
 		B3C96B681C13912700934437 /* SimpleCameraControllerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleCameraControllerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3C96B791C13912700934437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -40,7 +36,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B345ABAB1CC1411A00CEC02F /* SimpleCameraController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -67,7 +62,6 @@
 		B3C96B5F1C13912700934437 = {
 			isa = PBXGroup;
 			children = (
-				B345ABAA1CC1411A00CEC02F /* SimpleCameraController.framework */,
 				B3C96B6A1C13912700934437 /* SimpleCameraControllerExample */,
 				B3C96B691C13912700934437 /* Products */,
 			);

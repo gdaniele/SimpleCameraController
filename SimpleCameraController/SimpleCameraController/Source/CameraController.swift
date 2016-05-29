@@ -24,10 +24,8 @@ public protocol CameraController {
   var flashMode: AVCaptureFlashMode { get }
   var supportsFlash: Bool { get }
   var supportsFrontCamera: Bool { get }
-  var supportedCameraPositions: Set<AVCaptureDevicePosition> { get }
-  var supportedFeatures: [CameraSupportedFeature] { get }
 
-  func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
+  func connectCameraToView(previewView: UIView, completion: ConnectCameraControllerCallback)
   func setCameraPosition(position: AVCaptureDevicePosition) throws
   func setFlashMode(mode: AVCaptureFlashMode) throws
   func takePhoto(completion: ImageCaptureCallback)
@@ -37,6 +35,7 @@ public protocol CameraController {
 
 public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorType?) -> ())?
 public typealias VideoCaptureCallback = ((file: NSURL?, error: ErrorType?) -> ())?
+public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: ErrorType?)-> ())?
 
 // MARK:- State
 

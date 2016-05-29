@@ -17,6 +17,8 @@
 		B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */; };
 		B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */; };
 		B3E092301CFB62EA00083B59 /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E0922F1CFB62EA00083B59 /* AVCamera.swift */; };
+		B3E092341CFB6C2500083B59 /* AVCaptureSessionMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */; };
+		B3E092361CFB725E00083B59 /* AVAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092351CFB725E00083B59 /* AVAuthorizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -43,6 +45,8 @@
 		B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
 		B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
 		B3E0922F1CFB62EA00083B59 /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
+		B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureSessionMaker.swift; sourceTree = "<group>"; };
+		B3E092351CFB725E00083B59 /* AVAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAuthorizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -111,6 +115,8 @@
 				B345AB8F1CC13BB300CEC02F /* Info.plist */,
 				B3076A321CC1F50C0086BE32 /* AVCamcorder.swift */,
 				B3E0922F1CFB62EA00083B59 /* AVCamera.swift */,
+				B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */,
+				B3E092351CFB725E00083B59 /* AVAuthorizer.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -246,7 +252,9 @@
 				B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */,
 				B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */,
 				B3076A331CC1F50C0086BE32 /* AVCamcorder.swift in Sources */,
+				B3E092361CFB725E00083B59 /* AVAuthorizer.swift in Sources */,
 				B345AB921CC13BB300CEC02F /* CameraController.swift in Sources */,
+				B3E092341CFB6C2500083B59 /* AVCaptureSessionMaker.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
