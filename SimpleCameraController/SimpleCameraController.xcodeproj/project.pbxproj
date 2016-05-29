@@ -7,18 +7,19 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B3076A331CC1F50C0086BE32 /* AVCamcorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3076A321CC1F50C0086BE32 /* AVCamcorder.swift */; };
+		B31C88B21CFBA2EB008EED1E /* AVAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */; };
+		B31C88B31CFBA2EB008EED1E /* AVCamcorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */; };
+		B31C88B41CFBA2EB008EED1E /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */; };
+		B31C88B51CFBA2EB008EED1E /* AVCaptureSessionMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */; };
+		B31C88B61CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */; };
+		B31C88B71CFBA2EB008EED1E /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */; };
+		B31C88B81CFBA2EB008EED1E /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B11CFBA2EB008EED1E /* PreviewView.swift */; };
+		B31C88BA1CFBA302008EED1E /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B91CFBA302008EED1E /* CameraController.swift */; };
 		B345AB751CC13BA600CEC02F /* SimpleCameraController.h in Headers */ = {isa = PBXBuildFile; fileRef = B345AB741CC13BA600CEC02F /* SimpleCameraController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B345AB7C1CC13BA600CEC02F /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B345AB711CC13BA600CEC02F /* SimpleCameraController.framework */; };
 		B345AB811CC13BA600CEC02F /* SimpleCameraControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB801CC13BA600CEC02F /* SimpleCameraControllerTests.swift */; };
 		B345AB911CC13BB300CEC02F /* CameraControl.h in Headers */ = {isa = PBXBuildFile; fileRef = B345AB8D1CC13BB300CEC02F /* CameraControl.h */; };
-		B345AB921CC13BB300CEC02F /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB8E1CC13BB300CEC02F /* CameraController.swift */; };
 		B345AB931CC13BB300CEC02F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B345AB8F1CC13BB300CEC02F /* Info.plist */; };
-		B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */; };
-		B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */; };
-		B3E092301CFB62EA00083B59 /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E0922F1CFB62EA00083B59 /* AVCamera.swift */; };
-		B3E092341CFB6C2500083B59 /* AVCaptureSessionMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */; };
-		B3E092361CFB725E00083B59 /* AVAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092351CFB725E00083B59 /* AVAuthorizer.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -32,7 +33,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B3076A321CC1F50C0086BE32 /* AVCamcorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamcorder.swift; sourceTree = "<group>"; };
+		B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAuthorizer.swift; sourceTree = "<group>"; };
+		B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamcorder.swift; sourceTree = "<group>"; };
+		B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
+		B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureSessionMaker.swift; sourceTree = "<group>"; };
+		B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
+		B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
+		B31C88B11CFBA2EB008EED1E /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
+		B31C88B91CFBA302008EED1E /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		B345AB711CC13BA600CEC02F /* SimpleCameraController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleCameraController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B345AB741CC13BA600CEC02F /* SimpleCameraController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleCameraController.h; sourceTree = "<group>"; };
 		B345AB761CC13BA600CEC02F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -40,13 +48,7 @@
 		B345AB801CC13BA600CEC02F /* SimpleCameraControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SimpleCameraControllerTests.swift; sourceTree = "<group>"; };
 		B345AB821CC13BA600CEC02F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B345AB8D1CC13BB300CEC02F /* CameraControl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CameraControl.h; sourceTree = "<group>"; };
-		B345AB8E1CC13BB300CEC02F /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
 		B345AB8F1CC13BB300CEC02F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
-		B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
-		B3E0922F1CFB62EA00083B59 /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
-		B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureSessionMaker.swift; sourceTree = "<group>"; };
-		B3E092351CFB725E00083B59 /* AVAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAuthorizer.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,15 +110,16 @@
 		B345AB8B1CC13BB300CEC02F /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */,
-				B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */,
+				B31C88B91CFBA302008EED1E /* CameraController.swift */,
+				B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */,
+				B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */,
+				B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */,
+				B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */,
+				B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */,
+				B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */,
+				B31C88B11CFBA2EB008EED1E /* PreviewView.swift */,
 				B345AB8D1CC13BB300CEC02F /* CameraControl.h */,
-				B345AB8E1CC13BB300CEC02F /* CameraController.swift */,
 				B345AB8F1CC13BB300CEC02F /* Info.plist */,
-				B3076A321CC1F50C0086BE32 /* AVCamcorder.swift */,
-				B3E0922F1CFB62EA00083B59 /* AVCamera.swift */,
-				B3E092331CFB6C2500083B59 /* AVCaptureSessionMaker.swift */,
-				B3E092351CFB725E00083B59 /* AVAuthorizer.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -248,13 +251,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B3E092301CFB62EA00083B59 /* AVCamera.swift in Sources */,
-				B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */,
-				B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */,
-				B3076A331CC1F50C0086BE32 /* AVCamcorder.swift in Sources */,
-				B3E092361CFB725E00083B59 /* AVAuthorizer.swift in Sources */,
-				B345AB921CC13BB300CEC02F /* CameraController.swift in Sources */,
-				B3E092341CFB6C2500083B59 /* AVCaptureSessionMaker.swift in Sources */,
+				B31C88B21CFBA2EB008EED1E /* AVAuthorizer.swift in Sources */,
+				B31C88B51CFBA2EB008EED1E /* AVCaptureSessionMaker.swift in Sources */,
+				B31C88B81CFBA2EB008EED1E /* PreviewView.swift in Sources */,
+				B31C88B71CFBA2EB008EED1E /* AVFoundationCameraController.swift in Sources */,
+				B31C88B61CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */,
+				B31C88B31CFBA2EB008EED1E /* AVCamcorder.swift in Sources */,
+				B31C88BA1CFBA302008EED1E /* CameraController.swift in Sources */,
+				B31C88B41CFBA2EB008EED1E /* AVCamera.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -371,10 +375,15 @@
 		B345AB861CC13BA600CEC02F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SimpleCameraController",
+				);
 				INFOPLIST_FILE = SimpleCameraController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
@@ -382,16 +391,22 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.gdaniele.SimpleCameraController;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 			};
 			name = Debug;
 		};
 		B345AB871CC13BA600CEC02F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ENABLE_MODULES = YES;
 				DEFINES_MODULE = YES;
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/SimpleCameraController",
+				);
 				INFOPLIST_FILE = SimpleCameraController/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";

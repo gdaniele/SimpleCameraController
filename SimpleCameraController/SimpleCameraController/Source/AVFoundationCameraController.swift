@@ -35,6 +35,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
   // MARK:-  State
   private var outputMode: CameraOutputMode = .StillImage
   private var setupResult: CameraControllerSetupResult = .NotDetermined
+  // used to automatically update device orientation changes in video recording
+  private weak var previewView: UIView?
 
   public override init() {
     self.authorizer = AVAuthorizer.self
@@ -53,7 +55,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
     return AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
   }
 
-  public private(set) var cameraPosition: AVCaptureDevicePosition = .Unspecified
+  public private(set) var cameraPosition: AVCaptureDevicePosition = .Front
   public private(set) var captureQuality: CaptureQuality = .High
   public private(set) var flashMode: AVCaptureFlashMode = .Off
 
@@ -105,11 +107,11 @@ public class AVFoundationCameraController: NSObject, CameraController {
       guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice)
         where preferredDevice is AVCaptureDevice else {
 
-          guard let uDefdefauaultDevice = (defaultDevice as? AVCaptureDevice)
+          guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice)
             where defaultDevice is AVCaptureDevice else {
               throw CameraControllerAuthorizationError.NotSupported
           }
-          return uDefdefauaultDevice
+          return uDefaultDevice
       }
 
       return uPreferredDevice
@@ -119,6 +121,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   public func connectCameraToView(previewView: UIView,
                                   completion: ConnectCameraControllerCallback) {
+    self.previewView = previewView
+
     guard camera.cameraSupported else {
       setupResult = .ConfigurationFailed
       completion?(didSucceed: false, error: CameraControllerAuthorizationError.NotSupported)
@@ -154,10 +158,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
   }
 
   public func setCameraPosition(position: AVCaptureDevicePosition) throws {
-    guard position != cameraPosition else {
-      return
-    }
-
     // Remove current input before setting position
     if let videoDeviceInput = videoDeviceInput {
       session.removeInput(videoDeviceInput)
@@ -170,10 +170,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
   }
 
   public func setFlashMode(mode: AVCaptureFlashMode) throws {
-    if mode == flashMode {
-      return
-    }
-
     guard let captureDevice = camera.backCaptureDevice else {
       throw CameraControllerAuthorizationError.NotSupported
     }

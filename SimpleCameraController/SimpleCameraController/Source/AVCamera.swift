@@ -7,6 +7,7 @@
 //
 
 import AVFoundation
+import UIKit
 
 protocol Camera {
   /// Takes photo via still image output via session queue

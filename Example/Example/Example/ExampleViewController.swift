@@ -11,9 +11,8 @@ import UIKit
 
 class ExampleViewController: UIViewController {
   private var cameraController: CameraController
-  private lazy var previewLayer: UIView = {
-    let view = UIView()
-    view.backgroundColor = UIColor.blackColor()
+  private lazy var previewLayer: PreviewView = {
+    let view = PreviewView()
     view.translatesAutoresizingMaskIntoConstraints = false
 
     return view
@@ -29,19 +28,13 @@ class ExampleViewController: UIViewController {
     fatalError("init(coder:) has not been implemented")
   }
 
-  override func viewDidLoad() {
-    super.viewDidLoad()
-
-    setUpUI()
-  }
-
-  private func setUpUI() {
-    // Adds previewLayer
-    self.view.addSubview(self.previewLayer)
+  override func loadView() {
+    let view = UIView()
+    view.addSubview(self.previewLayer)
 
     // Sets constraints
     if let uSuperView = self.previewLayer.superview {
-      self.view.addConstraints(
+      view.addConstraints(
         [
           NSLayoutConstraint(item: previewLayer,
             attribute: .Top, relatedBy: .Equal,
@@ -74,12 +67,41 @@ class ExampleViewController: UIViewController {
       )
     }
 
-    self.cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
+    self.view = view
+  }
+
+  override func updateViewConstraints() {
+    super.updateViewConstraints()
+
+    if self.view.superview != nil && self.view.constraints.isEmpty {
+      let views = ["view": self.view]
+
+      [NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|",
+        options: NSLayoutFormatOptions(rawValue: 0),
+        metrics: nil,
+        views: views),
+       NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|",
+        options: NSLayoutFormatOptions(rawValue: 0),
+        metrics: nil,
+        views: views)].forEach({
+          self.view.addConstraints($0)
+        })
+    }
+  }
+
+  override func viewDidLoad() {
+    super.viewDidLoad()
+
+    cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
       guard didSucceed && error == nil else {
         print("Connect Camera - Error!")
         return
       }
       print("Connect Camera - Success!")
     })
+  }
+
+  override func viewWillTransitionToSize(size: CGSize, withTransitionCoordinator coordinator: UIViewControllerTransitionCoordinator) {
+    super.viewWillTransitionToSize(size, withTransitionCoordinator: coordinator)
   }
 }
