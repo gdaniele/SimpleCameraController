@@ -83,11 +83,3 @@ class ExampleViewController: UIViewController {
     })
   }
 }
-
-// MARK: CameraControllerObserver
-
-extension ExampleViewController: CameraControllerObserver {
-  func updatePropertyWithName(propertyName: String, value: AnyObject?) {
-    print("\(self.self) recieved \(propertyName): \(value)")
-  }
-}

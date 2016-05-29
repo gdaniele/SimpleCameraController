@@ -6,11 +6,12 @@
 //  Copyright © 2015 Giancarlo. All rights reserved.
 //
 
-import UIKit
+import AVFoundation
 import SimpleCameraController
+import UIKit
 
 @UIApplicationMain
-class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDelegate {
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
   var window: UIWindow?
 
@@ -18,7 +19,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate, UISplitViewControllerDele
                    didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
     window = UIWindow(frame: UIScreen.mainScreen().bounds)
     window?.rootViewController =
-      ExampleViewController(cameraController: AVFoundationCameraController())
+      ExampleViewController()
     window?.makeKeyAndVisible()
 
     return true

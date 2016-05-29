@@ -17,8 +17,9 @@ import UIKit
  @discussion
  `CameraController` provides an interface for setting up and performing common camera functions.
  */
-public protocol CameraController: CameraControllerSubject {
-  // Properties
+public protocol CameraController {
+  associatedtype PhotoCaptureCallback
+
   var authorizationStatus: AVAuthorizationStatus { get }
   var cameraPosition: AVCaptureDevicePosition { get }
   var captureQuality: CaptureQuality { get }
@@ -28,11 +29,22 @@ public protocol CameraController: CameraControllerSubject {
   var supportedCameraPositions: Set<AVCaptureDevicePosition> { get }
   var supportedFeatures: [CameraSupportedFeature] { get }
 
-  // Internal API
   func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
   func setCameraPosition(position: AVCaptureDevicePosition) throws
   func setFlashMode(mode: AVCaptureFlashMode) throws
-  func takePhoto(completion: ((UIImage?, ErrorType?)->())?)
+  func takePhoto(completion: PhotoCaptureCallback)
+}
+
+// MARK: Internal interfaces defining more specific camera concerns
+
+protocol Camcorder {
+  func startVideoRecording()
+  func stopVideoRecording()
+}
+
+protocol Camera {
+  associatedtype PhotoCaptureCallback
+  func takePhoto(completion: PhotoCaptureCallback)
 }
 
 // MARK:- State
@@ -99,27 +111,13 @@ public enum CameraSupportedFeature {
  `CameraControllerError` represents CameraController API-level error resulting from incorrect usage.
 
  @discussion
- CameraController successful operation depends on correctly connecting the camera to a previewLayer.
+ CameraController successful operation depends on correctly connecting the camera to a preview layer.
  */
 public enum CameraControllerError: ErrorType {
   case ImageCaptureFailed
   case NotRunning
-  case DeviceDoesNotSupportFeature
-  case WrongConfiguration
-}
-
-/*!
- @error CameraControllerPreviewLayerError
- @abstract
- `CameraControllerVideoDeviceError` represents CameraController video device error possibilities.
-
- @discussion
- Camera controller may fail to function due to a variety of setup and permissions errors
- represented in this enum.
- */
-public enum CameraControllerPreviewLayerError: ErrorType {
-  case NotFound
   case SetupFailed
+  case WrongConfiguration
 }
 
 /*!
@@ -131,30 +129,8 @@ public enum CameraControllerPreviewLayerError: ErrorType {
  Camera controller may fail to function due to a variety of setup and permissions errors
  represented in this enum.
  */
-public enum CameraControllerVideoDeviceError: ErrorType {
+public enum CameraControllerAuthorizationError: ErrorType {
   case NotAuthorized
-  case NotFound
-  case SetupFailed
-}
-
-// MARK:- Observer/Subject Design Pattern
-
-/*!
- @interface CameraControllerObserver
- @abstract
- `CameraControllerObserver` is an interface that camera controller observers conform to in order
- to be notified of camera controller updates.
- */
-public protocol CameraControllerObserver: class {
-  func updatePropertyWithName(propertyName: String, value: AnyObject?)
-}
-/*!
- @interface CameraControllerSubject
- @abstract
- `CameraControllerSubject` is an interface that camera controller data controller objects conform
- to in order to notify observers of property changes.
- */
-public protocol CameraControllerSubject {
-  func subscribe(observer: CameraControllerObserver)
-  func unsubscribe(observer: CameraControllerObserver)
+  case Restricted
+  case NotSupported
 }

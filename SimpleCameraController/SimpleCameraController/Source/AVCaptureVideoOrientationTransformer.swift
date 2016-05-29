@@ -8,8 +8,6 @@
 
 import AVFoundation
 
-// MARK:- Useful Extensions
-
 /*!
  @struct AVCaptureVideoOrientationTransformer
  @abstract
