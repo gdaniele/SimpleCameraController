@@ -20,7 +20,7 @@ import AVFoundation
  */
 struct AVCaptureVideoOrientationTransformer {
   static func videoOrientationFromUIInterfaceOrientation(orientation: UIInterfaceOrientation)
-    throws -> AVCaptureVideoOrientation {
+    -> AVCaptureVideoOrientation? {
     switch orientation {
     case .Portrait:
       return .Portrait
@@ -30,14 +30,7 @@ struct AVCaptureVideoOrientationTransformer {
       return .LandscapeRight
     case .LandscapeLeft:
       return .LandscapeLeft
-    default:
-      throw AVCaptureVideoOrientationConversionError.NotValid
+    default: return nil
     }
   }
-}
-
-// MARK: AVCaptureVideoOrientationConversionError
-
-public enum AVCaptureVideoOrientationConversionError: ErrorType {
-  case NotValid
 }

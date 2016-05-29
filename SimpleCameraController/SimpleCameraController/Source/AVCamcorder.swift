@@ -9,6 +9,12 @@
 import AVFoundation
 import Foundation
 
+// MARK: Internal interfaces defining more specific camera concerns
+
+protocol Camcorder {
+  func startVideoRecording()
+  func stopVideoRecording()
+}
 
 public class AVCamcorder: NSObject, Camcorder {
   private weak var captureSession: AVCaptureSession?
@@ -69,6 +75,5 @@ extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
     didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
                                         fromConnections connections: [AnyObject]!,
                                                         error: NSError!) {
-    
   }
 }

@@ -16,6 +16,7 @@
 		B345AB931CC13BB300CEC02F /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = B345AB8F1CC13BB300CEC02F /* Info.plist */; };
 		B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */; };
 		B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */; };
+		B3E092301CFB62EA00083B59 /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E0922F1CFB62EA00083B59 /* AVCamera.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -41,6 +42,7 @@
 		B345AB8F1CC13BB300CEC02F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B345AB991CC13D4400CEC02F /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
 		B345AB9B1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
+		B3E0922F1CFB62EA00083B59 /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -108,6 +110,7 @@
 				B345AB8E1CC13BB300CEC02F /* CameraController.swift */,
 				B345AB8F1CC13BB300CEC02F /* Info.plist */,
 				B3076A321CC1F50C0086BE32 /* AVCamcorder.swift */,
+				B3E0922F1CFB62EA00083B59 /* AVCamera.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -239,6 +242,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3E092301CFB62EA00083B59 /* AVCamera.swift in Sources */,
 				B345AB9A1CC13D4400CEC02F /* AVFoundationCameraController.swift in Sources */,
 				B345AB9C1CC13D5D00CEC02F /* AVCaptureVideoOrientationTransformer.swift in Sources */,
 				B3076A331CC1F50C0086BE32 /* AVCamcorder.swift in Sources */,

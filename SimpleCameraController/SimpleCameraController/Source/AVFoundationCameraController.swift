@@ -28,6 +28,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
   private weak var previewView: UIView? = nil
   private weak var previewLayer: AVCaptureVideoPreviewLayer? = nil
 
+  private let camera: Camera
   private let camcorder: Camcorder
 
   // MARK:-  State
@@ -43,6 +44,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
     self.availableCaptureDevicePositions = AVFoundationCameraController
       .availableCaptureDevicePositionsWithMediaType(AVMediaTypeVideo)
     self.session = AVCaptureSession()
+    self.camera = AVCamera()
     self.camcorder = AVCamcorder(captureSession: self.session)
     self.sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL)
 
@@ -61,12 +63,12 @@ public class AVFoundationCameraController: NSObject, CameraController {
   public private(set) var captureQuality: CaptureQuality = .High
   public private(set) var flashMode: AVCaptureFlashMode = .Off
 
-  public var hasFlash: Bool {
+  public var supportsFlash: Bool {
     get {
       return backCaptureDevice?.hasFlash ?? false
     }
   }
-  public var hasFrontCamera: Bool {
+  public var supportsFrontCamera: Bool {
     get {
       return availableCaptureDevicePositions.contains(.Front) ?? false
     }
@@ -80,8 +82,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
   public var supportedFeatures: [CameraSupportedFeature] {
     get {
       var supportedFeatures = [CameraSupportedFeature]()
-      if hasFlash { supportedFeatures.append(.Flash) }
-      if hasFrontCamera { supportedFeatures.append(.FrontCamera) }
+      if supportsFlash { supportedFeatures.append(.Flash) }
+      if supportsFrontCamera { supportedFeatures.append(.FrontCamera) }
       return supportedFeatures
     }
   }
@@ -194,18 +196,18 @@ public class AVFoundationCameraController: NSObject, CameraController {
     camcorder.startVideoRecording()
   }
 
-  public func stopVideoRecording() {
+  public func stopVideoRecording(completion: VideoCaptureCallback) {
     camcorder.stopVideoRecording()
   }
 
-  public func takePhoto(completion: ((UIImage?, ErrorType?)->())?) {
+  public func takePhoto(completion: ImageCaptureCallback) {
     guard setupResult == .Running else {
-      completion?(nil, CameraControllerError.NotRunning)
+      completion?(image: nil, error: CameraControllerError.NotRunning)
       return
     }
 
     guard let uStillImageOutput = stillImageOutput where outputMode == .StillImage else {
-      completion?(nil, CameraControllerError.WrongConfiguration)
+      completion?(image: nil, error: CameraControllerError.WrongConfiguration)
       return
     }
 
@@ -216,18 +218,18 @@ public class AVFoundationCameraController: NSObject, CameraController {
         .captureStillImageAsynchronouslyFromConnection(connection,
           completionHandler: { imageDataSampleBuffer, receivedError in
             guard receivedError == nil else {
-              completion?(nil, receivedError!)
+              completion?(image: nil, error: receivedError!)
               return
             }
             if let uImageDataBuffer = imageDataSampleBuffer {
               let imageData = AVCaptureStillImageOutput
                 .jpegStillImageNSDataRepresentation(uImageDataBuffer)
               guard let image = UIImage(data: imageData) else {
-                completion?(nil, CameraControllerError.ImageCaptureFailed)
+                completion?(image: nil, error: CameraControllerError.ImageCaptureFailed)
                 return
               }
               dispatch_async(dispatch_get_main_queue(), {
-                completion?(image, nil)
+                completion?(image: image, error: nil)
                 return
               })
             }
@@ -460,7 +462,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
       let currentStatusBarOrientation = UIApplication.sharedApplication().statusBarOrientation
 
       guard let uConnection = previewLayer.connection,
-        let newOrientation = try?
+        let newOrientation =
           AVCaptureVideoOrientationTransformer
             .videoOrientationFromUIInterfaceOrientation(currentStatusBarOrientation) else {
               return

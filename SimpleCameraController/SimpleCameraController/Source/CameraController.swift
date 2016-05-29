@@ -18,34 +18,25 @@ import UIKit
  `CameraController` provides an interface for setting up and performing common camera functions.
  */
 public protocol CameraController {
-  associatedtype PhotoCaptureCallback
-
   var authorizationStatus: AVAuthorizationStatus { get }
   var cameraPosition: AVCaptureDevicePosition { get }
   var captureQuality: CaptureQuality { get }
   var flashMode: AVCaptureFlashMode { get }
-  var hasFlash: Bool { get }
-  var hasFrontCamera: Bool { get }
+  var supportsFlash: Bool { get }
+  var supportsFrontCamera: Bool { get }
   var supportedCameraPositions: Set<AVCaptureDevicePosition> { get }
   var supportedFeatures: [CameraSupportedFeature] { get }
 
   func connectCameraToView(previewView: UIView, completion: ((Bool, ErrorType?)-> ())?)
   func setCameraPosition(position: AVCaptureDevicePosition) throws
   func setFlashMode(mode: AVCaptureFlashMode) throws
-  func takePhoto(completion: PhotoCaptureCallback)
-}
-
-// MARK: Internal interfaces defining more specific camera concerns
-
-protocol Camcorder {
+  func takePhoto(completion: ImageCaptureCallback)
   func startVideoRecording()
-  func stopVideoRecording()
+  func stopVideoRecording(completion: VideoCaptureCallback)
 }
 
-protocol Camera {
-  associatedtype PhotoCaptureCallback
-  func takePhoto(completion: PhotoCaptureCallback)
-}
+public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorType?) -> ())?
+public typealias VideoCaptureCallback = ((file: NSURL?, error: ErrorType?) -> ())?
 
 // MARK:- State
 
@@ -108,10 +99,8 @@ public enum CameraSupportedFeature {
 /*!
  @error CameraControllerError
  @abstract
- `CameraControllerError` represents CameraController API-level error resulting from incorrect usage.
-
- @discussion
- CameraController successful operation depends on correctly connecting the camera to a preview layer.
+ `CameraControllerError` represents CameraController API-level error resulting from incorrect usage
+ or other failures
  */
 public enum CameraControllerError: ErrorType {
   case ImageCaptureFailed
