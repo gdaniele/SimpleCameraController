@@ -16,18 +16,18 @@ protocol Camcorder {
   func stopVideoRecording()
 }
 
-public class AVCamcorder: NSObject, Camcorder {
+class AVCamcorder: NSObject, Camcorder {
   private weak var captureSession: AVCaptureSession?
 
-  required public init(captureSession: AVCaptureSession?) {
+  required init(captureSession: AVCaptureSession?) {
     self.captureSession = captureSession
     super.init()
   }
 
-  public func startVideoRecording() {
+  func startVideoRecording() {
   }
 
-  public func stopVideoRecording() {
+  func stopVideoRecording() {
     //
   }
 
@@ -63,14 +63,14 @@ public class AVCamcorder: NSObject, Camcorder {
 }
 
 extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
-  public func captureOutput(
+  func captureOutput(
     captureOutput: AVCaptureFileOutput!,
     didStartRecordingToOutputFileAtURL fileURL: NSURL!,
                                        fromConnections connections: [AnyObject]!) {
     //
   }
 
-  public func captureOutput(
+  func captureOutput(
     captureOutput: AVCaptureFileOutput!,
     didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
                                         fromConnections connections: [AnyObject]!,

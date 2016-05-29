@@ -9,6 +9,8 @@
 /* Begin PBXBuildFile section */
 		B345ABA21CC13F4300CEC02F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345ABA01CC13F4300CEC02F /* AppDelegate.swift */; };
 		B345ABA31CC13F4300CEC02F /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345ABA11CC13F4300CEC02F /* ExampleViewController.swift */; };
+		B3E092441CFB8A8200083B59 /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3E092421CFB8A7600083B59 /* SimpleCameraController.framework */; };
+		B3E092451CFB8A8200083B59 /* SimpleCameraController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3E092421CFB8A7600083B59 /* SimpleCameraController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -18,6 +20,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
+				B3E092451CFB8A8200083B59 /* SimpleCameraController.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -29,6 +32,7 @@
 		B345ABA11CC13F4300CEC02F /* ExampleViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
 		B3C96B681C13912700934437 /* SimpleCameraControllerExample.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = SimpleCameraControllerExample.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3C96B791C13912700934437 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B3E092421CFB8A7600083B59 /* SimpleCameraController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SimpleCameraController.framework; path = /Users/giancarlo/Software/personal/SimpleCameraController/SimpleCameraController/Carthage/Build/iOS/SimpleCameraController.framework; sourceTree = "<absolute>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				B3E092441CFB8A8200083B59 /* SimpleCameraController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
