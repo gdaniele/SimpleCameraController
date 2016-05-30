@@ -1,0 +1,36 @@
+language: objective-c
+
+branches:
+  only:
+  - master
+
+xcode_project: SimpleCameraController/SimpleCameraController.xcodeproj
+xcode_scheme: SimpleCameraController
+osx_image: xcode7.3
+xcode_sdk: iphonesimulator9.3
+
+env:
+  global:
+  - FRAMEWORK_NAME=SimpleCameraController
+
+before_install:
+- brew update
+- brew install carthage
+
+before_deploy:
+- carthage build --no-skip-current
+- carthage archive $FRAMEWORK_NAME
+
+script:
+- xcodebuild test -project SimpleCameraController/SimpleCameraController.xcodeproj
+  -scheme SimpleCameraController -destination "platform=iOS Simulator,name=iPhone
+  6s"
+
+deploy:
+  skip_cleanup: true
+  provider: releases
+  api_key:
+    secure: HGIA8uPp9Q3gQgG5DAB0DZAeu7gvsGULLork+NKkl9ddGxZexkV4QgjFvHB/x/lnRAH52EZxTQoq4o1+mbWIOYEfr9CG+0mnrxyktEt3iqPaZKC5ZHQc9i7iT8MwDUfDPJaVdoJEO2mLIk5nQ+qcc3MS2PPDQyfVmDtRdP5wEz7WXHc2ILnBVKLfboDwNGhtwTYjYxzd+ySOgiL/mwE0mNjuX4HNFOntDEhD6rcCw7fHyUo4OHAAdN/8TStXMKTZ+weHi7EKdoBsaf2zUXbl7Je5MveXaq9txjOoYayvdJ/mnTFlSeMgdM2YEiDPOBJ+BvaAZCGLG7042gC8XnM4YxMkv5MDBW2DGtZCsMxGa2Zx1S0FepXA96pYXPO0VHyOi54tg4Q1huSTp9jGAxFIniMPH8FNqtxJRBexYDW6spCrYU50rG7fPe3CRLJdzEHK2/nULHGKT7owUOnIzL+JECchfURJiqr8EVqAg7vQjy8Q7Cd1/KnmE52M0J42WaXs8u/9knJUFZf7hsIyXJIKQZR5TIRy1S5c6ArhglmPrRDxyHj3v6Qe1wYIywwUBzqwkpk6xZ3cJB5pIof6kj9+zrbtk0cfVEixG5eboizXmRYZrfwAprMnb4LeLFiUkjOGiGgESpYEOpVOXCEYjhs/VL9yNps7dzV6UcoMRIrhK/Y=
+  file: ./SimpleCameraController.framework.zip
+  on:
+    repo: gdaniele/SimpleCameraController
