@@ -315,6 +315,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
         return
       }
     }
+    completion(success: true, error: nil)
   }
 
   // Adds session to preview layer
