@@ -192,7 +192,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
   }
 
   /// Authorizes mic if necessary
-  public func startVideoRecording() {
+  public func startVideoRecording(completion: VideoCaptureCallback = nil) {
     // Request mic access if need be
     switch authorizer.audioStatus {
     case .NotDetermined:
@@ -203,14 +203,15 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
     if movieFileOutput == nil {
       captureSessionMaker.addMovieOutputToSession(session,
-                                                   sessionQueue: sessionQueue,
-                                                   completion: { movieFileOutput in
+                                                  sessionQueue: sessionQueue,
+                                                  completion: { movieFileOutput in
                                                     guard let movieFileOutput = movieFileOutput else {
                                                       print("Error starting video recording")
                                                       return
                                                     }
                                                     self.movieFileOutput = movieFileOutput
-                                                    self.camcorder.startVideoRecording(movieFileOutput,
+                                                    self.camcorder.startVideoRecording(completion,
+                                                      movieFileOutput: movieFileOutput,
                                                       session: self.session,
                                                       sessionQueue: self.sessionQueue)
       })
@@ -218,7 +219,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
     }
 
     guard let movieFileOutput = movieFileOutput else { return }
-    camcorder.startVideoRecording(movieFileOutput,
+    camcorder.startVideoRecording(completion,
+                                  movieFileOutput: movieFileOutput,
                                   session: session,
                                   sessionQueue: sessionQueue)
   }
@@ -239,18 +241,18 @@ public class AVFoundationCameraController: NSObject, CameraController {
     }
     guard let stillImageOutput = stillImageOutput else {
       captureSessionMaker.addStillImageOutputToSession(session,
-                                                        sessionQueue: sessionQueue,
-                                                        completion: { stillImageOutput in
-                                                          guard let stillImageOutput = stillImageOutput
-                                                            else {
-                                                              completion?(image: nil, error: CameraControllerError.SetupFailed)
-                                                              return
-                                                          }
-                                                          self.stillImageOutput = stillImageOutput
+                                                       sessionQueue: sessionQueue,
+                                                       completion: { stillImageOutput in
+                                                        guard let stillImageOutput = stillImageOutput
+                                                          else {
+                                                            completion?(image: nil, error: CameraControllerError.SetupFailed)
+                                                            return
+                                                        }
+                                                        self.stillImageOutput = stillImageOutput
 
-                                                          self.camera.takePhoto(self.sessionQueue,
-                                                            stillImageOutput: stillImageOutput,
-                                                            completion: completion)
+                                                        self.camera.takePhoto(self.sessionQueue,
+                                                          stillImageOutput: stillImageOutput,
+                                                          completion: completion)
       })
       return
     }

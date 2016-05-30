@@ -29,7 +29,7 @@ public protocol CameraController {
   func setCameraPosition(position: AVCaptureDevicePosition) throws
   func setFlashMode(mode: AVCaptureFlashMode) throws
   func takePhoto(completion: ImageCaptureCallback)
-  func startVideoRecording()
+  func startVideoRecording(completion: VideoCaptureCallback)
   func stopVideoRecording(completion: VideoCaptureCallback)
 }
 

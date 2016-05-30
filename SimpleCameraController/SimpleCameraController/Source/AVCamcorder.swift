@@ -12,7 +12,8 @@ import Foundation
 // MARK: Internal interfaces defining more specific camera concerns
 
 protocol Camcorder {
-  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+  func startVideoRecording(completion: VideoCaptureCallback,
+                           movieFileOutput: AVCaptureMovieFileOutput,
                            session: AVCaptureSession,
                            sessionQueue: dispatch_queue_t)
   func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
@@ -34,9 +35,11 @@ class AVCamcorder: NSObject, Camcorder {
 
   private var videoCompletion: VideoCaptureCallback? =  nil
 
-  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+  func startVideoRecording(completion: VideoCaptureCallback = nil,
+                           movieFileOutput: AVCaptureMovieFileOutput,
                            session: AVCaptureSession,
                            sessionQueue: dispatch_queue_t) {
+    videoCompletion = completion
     sessionMaker
       .addAudioInputToSession(session,
                               sessionQueue: sessionQueue,

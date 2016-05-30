@@ -7,8 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B31C88E21CFBCB8F008EED1E /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B31C88E01CFBCB6F008EED1E /* SimpleCameraController.framework */; };
-		B31C88E31CFBCB8F008EED1E /* SimpleCameraController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B31C88E01CFBCB6F008EED1E /* SimpleCameraController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
+		B3C9D8731CFC95C50021302F /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B3C9D8721CFC95C50021302F /* SimpleCameraController.framework */; };
+		B3C9D8741CFC95C50021302F /* SimpleCameraController.framework in Embed Frameworks */ = {isa = PBXBuildFile; fileRef = B3C9D8721CFC95C50021302F /* SimpleCameraController.framework */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		B3E092911CFB8DD400083B59 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092901CFB8DD400083B59 /* AppDelegate.swift */; };
 		B3E092931CFB8DD400083B59 /* ExampleViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3E092921CFB8DD400083B59 /* ExampleViewController.swift */; };
 		B3E092961CFB8DD400083B59 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B3E092941CFB8DD400083B59 /* Main.storyboard */; };
@@ -34,7 +34,7 @@
 			dstPath = "";
 			dstSubfolderSpec = 10;
 			files = (
-				B31C88E31CFBCB8F008EED1E /* SimpleCameraController.framework in Embed Frameworks */,
+				B3C9D8741CFC95C50021302F /* SimpleCameraController.framework in Embed Frameworks */,
 			);
 			name = "Embed Frameworks";
 			runOnlyForDeploymentPostprocessing = 0;
@@ -42,7 +42,7 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		B31C88E01CFBCB6F008EED1E /* SimpleCameraController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SimpleCameraController.framework; sourceTree = "<group>"; };
+		B3C9D8721CFC95C50021302F /* SimpleCameraController.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SimpleCameraController.framework; sourceTree = "<group>"; };
 		B3E0928D1CFB8DD400083B59 /* Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B3E092901CFB8DD400083B59 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		B3E092921CFB8DD400083B59 /* ExampleViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExampleViewController.swift; sourceTree = "<group>"; };
@@ -60,7 +60,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B31C88E21CFBCB8F008EED1E /* SimpleCameraController.framework in Frameworks */,
+				B3C9D8731CFC95C50021302F /* SimpleCameraController.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -77,6 +77,7 @@
 		B3E092841CFB8DD400083B59 = {
 			isa = PBXGroup;
 			children = (
+				B3C9D8721CFC95C50021302F /* SimpleCameraController.framework */,
 				B3E0928F1CFB8DD400083B59 /* Example */,
 				B3E092A41CFB8DD400083B59 /* ExampleTests */,
 				B3E0928E1CFB8DD400083B59 /* Products */,
@@ -95,7 +96,6 @@
 		B3E0928F1CFB8DD400083B59 /* Example */ = {
 			isa = PBXGroup;
 			children = (
-				B31C88E01CFBCB6F008EED1E /* SimpleCameraController.framework */,
 				B3E092901CFB8DD400083B59 /* AppDelegate.swift */,
 				B3E092921CFB8DD400083B59 /* ExampleViewController.swift */,
 				B3E092941CFB8DD400083B59 /* Main.storyboard */,

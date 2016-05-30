@@ -95,6 +95,7 @@ typedef int swift_int4  __attribute__((__ext_vector_type__(4)));
 @import ObjectiveC;
 @import AVFoundation;
 @import UIKit;
+@import CoreGraphics;
 #endif
 
 #pragma clang diagnostic ignored "-Wproperty-attribute-mismatch"
@@ -115,13 +116,13 @@ SWIFT_CLASS("_TtC22SimpleCameraController28AVFoundationCameraController")
 - (BOOL)setFlashMode:(AVCaptureFlashMode)mode error:(NSError * _Nullable * _Null_unspecified)error;
 - (void)stopCaptureSession;
 - (void)startCaptureSession;
-- (void)startVideoRecording;
 @end
 
 @class NSCoder;
 
 SWIFT_CLASS("_TtC22SimpleCameraController11PreviewView")
 @interface PreviewView : UIView
+- (nonnull instancetype)initWithFrame:(CGRect)frame OBJC_DESIGNATED_INITIALIZER;
 - (nullable instancetype)initWithCoder:(NSCoder * _Nonnull)aDecoder OBJC_DESIGNATED_INITIALIZER;
 - (void)layoutSubviews;
 @end
