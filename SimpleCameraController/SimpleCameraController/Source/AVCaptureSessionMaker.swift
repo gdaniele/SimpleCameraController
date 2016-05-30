@@ -53,19 +53,10 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   static func addAudioInputToSession(session: AVCaptureSession,
                                       sessionQueue: dispatch_queue_t,
                                       completion: ((Bool) -> ())?) {
-    guard let mic = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio) else {
-      return
-    }
     session.beginConfiguration()
     dispatch_async(sessionQueue, {
-      do {
-        let micInput = try AVCaptureDeviceInput(device: mic)
-        session.addInput(micInput)
-        session.commitConfiguration()
-        completion?(true)
-      } catch {
-        print("error adding mic input")
-      }
+      addAudioInputToSession(session)
+      session.commitConfiguration()
     })
   }
 
@@ -80,6 +71,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
       var stillImageOutput: AVCaptureStillImageOutput?
       switch outputMode {
       case .Both:
+        addAudioInputToSession(session)
         movieFileOutput = addMovieFileOutputToSession(session)
         stillImageOutput = addStillImageOutputToSession(session)
       case .StillImage:
@@ -100,6 +92,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
                                        completion: MovieFileOutputCallback) {
     session.beginConfiguration()
     dispatch_async(sessionQueue, { () in
+      addAudioInputToSession(session)
       let movieFileOutput = addMovieFileOutputToSession(session)
 
       session.commitConfiguration()
@@ -128,6 +121,21 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   // MARK: Private
+
+  /// Important: This is a helper function and must be used in conjunction with session queue work
+  private static func addAudioInputToSession(session: AVCaptureSession) {
+    guard let mic = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio) else {
+      return
+    }
+    do {
+      let micInput = try AVCaptureDeviceInput(device: mic)
+      if session.canAddInput(micInput) {
+        session.addInput(micInput)
+      }
+    } catch {
+      print("Could not add mic")
+    }
+  }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
   private static func addMovieFileOutputToSession(session: AVCaptureSession) -> AVCaptureMovieFileOutput {

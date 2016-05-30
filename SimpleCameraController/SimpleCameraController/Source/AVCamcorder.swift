@@ -37,14 +37,14 @@ class AVCamcorder: NSObject, Camcorder {
   func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
                            session: AVCaptureSession,
                            sessionQueue: dispatch_queue_t) {
-    sessionMaker.addAudioInputToSession(session,
-                                        sessionQueue: sessionQueue,
-                                        completion: { success in
-                                          if success {
-                                            movieFileOutput.startRecordingToOutputFileURL(self.temporaryFilePath,
-                                              recordingDelegate: self)
-                                          }
-    })
+    sessionMaker
+      .addAudioInputToSession(session,
+                              sessionQueue: sessionQueue,
+                              completion: { success in
+                                movieFileOutput
+                                  .startRecordingToOutputFileURL(self.temporaryFilePath,
+                                    recordingDelegate: self)
+      })
   }
 
   func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
