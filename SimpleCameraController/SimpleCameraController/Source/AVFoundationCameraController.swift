@@ -202,7 +202,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
     assertRunningAndAuthorized({ [weak self] success, error in
       guard let strongSelf = self where success && error == nil else {
-        completion?(file: nil, error: CameraControllerError.SetupFailed)
+        completion?(file: nil, error: error ?? CameraControllerError.SetupFailed)
         return
       }
 
@@ -242,7 +242,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
   public func takePhoto(completion: ImageCaptureCallback) {
     assertRunningAndAuthorized({ [weak self] success, error in
       guard let strongSelf = self where success && error == nil else {
-        completion?(image: nil, error: CameraControllerError.SetupFailed)
+        completion?(image: nil, error: error ?? CameraControllerError.SetupFailed)
         return
       }
 
