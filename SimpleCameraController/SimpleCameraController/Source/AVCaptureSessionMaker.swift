@@ -57,6 +57,9 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
     dispatch_async(sessionQueue, {
       addAudioInputToSession(session)
       session.commitConfiguration()
+      dispatch_async(dispatch_get_main_queue(), {
+        completion?(true)
+      })
     })
   }
 
@@ -80,10 +83,10 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
         movieFileOutput = addMovieFileOutputToSession(session)
       }
       session.commitConfiguration()
-
-      completion?(movieFileOutput: movieFileOutput,
-        imageOutput: stillImageOutput)
-
+      dispatch_async(dispatch_get_main_queue(), {
+        completion?(movieFileOutput: movieFileOutput,
+          imageOutput: stillImageOutput)
+      })
     })
   }
 
@@ -97,7 +100,9 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
 
       session.commitConfiguration()
 
-      completion?(movieFileOutput: movieFileOutput)
+      dispatch_async(dispatch_get_main_queue(), {
+        completion?(movieFileOutput: movieFileOutput)
+      })
     })
   }
 
@@ -116,7 +121,9 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
 
       session.commitConfiguration()
 
-      completion?(imageOutput: stillImageOutput)
+      dispatch_async(dispatch_get_main_queue(), {
+        completion?(imageOutput: stillImageOutput)
+      })
     })
   }
 
