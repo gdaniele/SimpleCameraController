@@ -31,6 +31,9 @@ public protocol CameraController {
   func takePhoto(completion: ImageCaptureCallback)
   func startVideoRecording(completion: VideoCaptureCallback)
   func stopVideoRecording(completion: VideoCaptureCallback)
+
+  func startCaptureSession()
+  func stopCaptureSession()
 }
 
 public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorType?) -> ())?

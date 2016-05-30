@@ -298,7 +298,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
   /// Helper for take photo, record video
   /// Checks running status
   /// Checks authorization status
-  /// Requests access if need me
   private func assertRunningAndAuthorized(completion: (success: Bool, error: ErrorType?) -> ()) {
     guard setupResult == .Running else {
       switch AVAuthorizer.videoStatus {
@@ -309,17 +308,12 @@ public class AVFoundationCameraController: NSObject, CameraController {
         completion(success: false, error: CameraControllerAuthorizationError.NotAuthorized)
         return
       case .NotDetermined:
-        AVAuthorizer.requestAccessForVideo({ granted in
-          completion(success: granted, error: granted ?
-            nil : CameraControllerAuthorizationError.NotAuthorized)
-          return
-        })
+        completion(success: false, error: CameraControllerError.NotRunning)
+        return
       case .Restricted:
         completion(success: false, error: CameraControllerAuthorizationError.Restricted)
         return
       }
-      completion(success: false, error: CameraControllerError.NotRunning)
-      return
     }
   }
 
