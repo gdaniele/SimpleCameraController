@@ -10,19 +10,20 @@ import AVFoundation
 import UIKit
 
 public class PreviewView: UIView {
-  override init(frame: CGRect) {
+  override public init(frame: CGRect) {
     super.init(frame: frame)
 
-    NSNotificationCenter.defaultCenter().addObserver(self,
-                                                     selector: #selector(PreviewView.orientationChanged),
-                                                     name: UIApplicationDidChangeStatusBarOrientationNotification,
-                                                     object: nil)
+    NSNotificationCenter.defaultCenter()
+      .addObserver(self,
+                   selector: #selector(PreviewView.orientationChanged),
+                   name: UIApplicationDidChangeStatusBarOrientationNotification,
+                   object: nil)
   }
 
   deinit {
     NSNotificationCenter.defaultCenter().removeObserver(self)
   }
-  
+
   required public init?(coder aDecoder: NSCoder) {
     fatalError("init(coder:) has not been implemented")
   }
