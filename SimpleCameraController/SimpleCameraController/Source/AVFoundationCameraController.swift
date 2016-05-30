@@ -191,7 +191,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
     session.startRunning()
   }
 
-  /// Authorizes mic if necessary
   public func startVideoRecording(completion: VideoCaptureCallback = nil) {
     // Request mic access if need be
     switch authorizer.audioStatus {
@@ -201,28 +200,34 @@ public class AVFoundationCameraController: NSObject, CameraController {
       break
     }
 
-    if movieFileOutput == nil {
-      captureSessionMaker.addMovieOutputToSession(session,
-                                                  sessionQueue: sessionQueue,
-                                                  completion: { movieFileOutput in
-                                                    guard let movieFileOutput = movieFileOutput else {
-                                                      print("Error starting video recording")
-                                                      return
-                                                    }
-                                                    self.movieFileOutput = movieFileOutput
-                                                    self.camcorder.startVideoRecording(completion,
-                                                      movieFileOutput: movieFileOutput,
-                                                      session: self.session,
-                                                      sessionQueue: self.sessionQueue)
-      })
-      return
-    }
+    assertRunningAndAuthorized({ [weak self] success, error in
+      guard let strongSelf = self where success && error == nil else {
+        completion?(file: nil, error: CameraControllerError.SetupFailed)
+        return
+      }
 
-    guard let movieFileOutput = movieFileOutput else { return }
-    camcorder.startVideoRecording(completion,
-                                  movieFileOutput: movieFileOutput,
-                                  session: session,
-                                  sessionQueue: sessionQueue)
+      guard let movieFileOutput = strongSelf.movieFileOutput else {
+        strongSelf.captureSessionMaker.addMovieOutputToSession(strongSelf.session,
+          sessionQueue: strongSelf.sessionQueue,
+          completion: { movieFileOutput in
+            guard let movieFileOutput = movieFileOutput else {
+              print("Error starting video recording")
+              return
+            }
+            strongSelf.movieFileOutput = movieFileOutput
+            strongSelf.camcorder.startVideoRecording(completion,
+              movieFileOutput: movieFileOutput,
+              session: strongSelf.session,
+              sessionQueue: strongSelf.sessionQueue)
+        })
+        return
+      }
+
+      strongSelf.camcorder.startVideoRecording(completion,
+        movieFileOutput: movieFileOutput,
+        session: strongSelf.session,
+        sessionQueue: strongSelf.sessionQueue)
+    })
   }
 
   public func stopVideoRecording(completion: VideoCaptureCallback) {
@@ -235,30 +240,34 @@ public class AVFoundationCameraController: NSObject, CameraController {
   }
 
   public func takePhoto(completion: ImageCaptureCallback) {
-    guard setupResult == .Running else {
-      completion?(image: nil, error: CameraControllerError.NotRunning)
-      return
-    }
-    guard let stillImageOutput = stillImageOutput else {
-      captureSessionMaker.addStillImageOutputToSession(session,
-                                                       sessionQueue: sessionQueue,
-                                                       completion: { stillImageOutput in
-                                                        guard let stillImageOutput = stillImageOutput
-                                                          else {
-                                                            completion?(image: nil, error: CameraControllerError.SetupFailed)
-                                                            return
-                                                        }
-                                                        self.stillImageOutput = stillImageOutput
+    assertRunningAndAuthorized({ [weak self] success, error in
+      guard let strongSelf = self where success && error == nil else {
+        completion?(image: nil, error: CameraControllerError.SetupFailed)
+        return
+      }
 
-                                                        self.camera.takePhoto(self.sessionQueue,
-                                                          stillImageOutput: stillImageOutput,
-                                                          completion: completion)
-      })
-      return
-    }
-    camera.takePhoto(sessionQueue,
-                     stillImageOutput: stillImageOutput,
-                     completion: completion)
+      // Create still image output, if needed
+      guard let stillImageOutput = strongSelf.stillImageOutput else {
+        strongSelf.captureSessionMaker.addStillImageOutputToSession(strongSelf.session,
+          sessionQueue: strongSelf.sessionQueue,
+          completion: { stillImageOutput in
+            guard let stillImageOutput = stillImageOutput
+              else {
+                completion?(image: nil, error: CameraControllerError.SetupFailed)
+                return
+            }
+            strongSelf.stillImageOutput = stillImageOutput
+
+            strongSelf.camera.takePhoto(strongSelf.sessionQueue,
+              stillImageOutput: stillImageOutput,
+              completion: completion)
+        })
+        return
+      }
+      strongSelf.camera.takePhoto(strongSelf.sessionQueue,
+        stillImageOutput: stillImageOutput,
+        completion: completion)
+    })
   }
 
   // MARK:- Private lazy vars
@@ -285,6 +294,34 @@ public class AVFoundationCameraController: NSObject, CameraController {
   }
 
   // MARK:- Private API
+
+  /// Helper for take photo, record video
+  /// Checks running status
+  /// Checks authorization status
+  /// Requests access if need me
+  private func assertRunningAndAuthorized(completion: (success: Bool, error: ErrorType?) -> ()) {
+    guard setupResult == .Running else {
+      switch AVAuthorizer.videoStatus {
+      case .Authorized:
+        completion(success: false, error: CameraControllerError.NotRunning)
+        return
+      case .Denied:
+        completion(success: false, error: CameraControllerAuthorizationError.NotAuthorized)
+        return
+      case .NotDetermined:
+        AVAuthorizer.requestAccessForVideo({ granted in
+          completion(success: granted, error: granted ?
+            nil : CameraControllerAuthorizationError.NotAuthorized)
+          return
+        })
+      case .Restricted:
+        completion(success: false, error: CameraControllerAuthorizationError.Restricted)
+        return
+      }
+      completion(success: false, error: CameraControllerError.NotRunning)
+      return
+    }
+  }
 
   // Adds session to preview layer
   private func addPreviewLayerToView(previewView: UIView,

@@ -145,7 +145,8 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addMovieFileOutputToSession(session: AVCaptureSession) -> AVCaptureMovieFileOutput {
+  private static func addMovieFileOutputToSession(session: AVCaptureSession)
+    -> AVCaptureMovieFileOutput {
     let movieFileOutput = AVCaptureMovieFileOutput()
     movieFileOutput.maxRecordedDuration = CMTimeMakeWithSeconds(10, 30)
     movieFileOutput.minFreeDiskSpaceLimit = 1024 * 1024
