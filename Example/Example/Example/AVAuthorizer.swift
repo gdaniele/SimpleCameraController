@@ -14,8 +14,8 @@ protocol Authorizer {
   static var supportsFrontCamera: Bool { get }
   static var supportsFlash: Bool { get }
 
-  static func requestAccessForAudio(completion: (Bool) -> ())
-  static func requestAccessForVideo(completion: (Bool) -> ())
+  static func requestAccessForAudio(completion: ((Bool) -> ())?)
+  static func requestAccessForVideo(completion: ((Bool) -> ())?)
 }
 
 struct AVAuthorizer: Authorizer {
@@ -37,13 +37,13 @@ struct AVAuthorizer: Authorizer {
       .availableCaptureDevicePositionsWithMediaType(AVMediaTypeVideo).contains(.Front)
   }
 
-  static func requestAccessForAudio(completion: (Bool) -> ()) {
+  static func requestAccessForAudio(completion: ((Bool) -> ())?) {
     AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio,
-                                              completionHandler: { completion($0) })
+                                              completionHandler: { completion?($0) })
   }
 
-  static func requestAccessForVideo(completion: (Bool) -> ()) {
+  static func requestAccessForVideo(completion: ((Bool) -> ())?) {
     AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
-                                              completionHandler: { completion($0) })
+                                              completionHandler: { completion?($0) })
   }
 }

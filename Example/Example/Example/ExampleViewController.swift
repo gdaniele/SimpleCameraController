@@ -98,6 +98,17 @@ class ExampleViewController: UIViewController {
       }
       print("Connect Camera - Success!")
     })
+
+    delay(2, closure: {
+      self.cameraController.startVideoRecording()
+
+      delay(3, closure: {
+        self.cameraController.stopVideoRecording(nil)
+        self.cameraController.takePhoto({ image in
+          print("Get \(image)")
+        })
+      })
+    })
   }
 }
 

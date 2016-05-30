@@ -12,18 +12,54 @@ import Foundation
 // MARK: Internal interfaces defining more specific camera concerns
 
 protocol Camcorder {
-  func startVideoRecording()
-  func stopVideoRecording()
+  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                           session: AVCaptureSession,
+                           sessionQueue: dispatch_queue_t)
+  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                          completion: VideoCaptureCallback)
+}
+
+typealias CamcorderCallback = ((success: Bool, error: CamcorderError?) -> ())?
+
+public enum CamcorderError: ErrorType {
+  case MicError
+  case MicDenied
+  case MicRestricted
+  case NotRunning
 }
 
 class AVCamcorder: NSObject, Camcorder {
+  private let authorizer: Authorizer.Type = AVAuthorizer.self
+  private let sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 
-  func startVideoRecording() {
+  private var videoCompletion: VideoCaptureCallback? =  nil
+
+  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                           session: AVCaptureSession,
+                           sessionQueue: dispatch_queue_t) {
+    guard let mic = self.mic else {
+      print("Problem setting up mic (permission denied or error")
+      return
+    }
+
+    do {
+      let micInput = try AVCaptureDeviceInput(device: mic)
+      session.addInput(micInput)
+
+      movieFileOutput.startRecordingToOutputFileURL(temporaryFilePath,
+                                                    recordingDelegate: self)
+    } catch {
+      print("Mic error")
+    }
 
   }
 
-  func stopVideoRecording() {
-    //
+  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                          completion: VideoCaptureCallback) {
+    if movieFileOutput.recording {
+      videoCompletion = completion
+      movieFileOutput.stopRecording()
+    }
   }
 
   // MARK: Private
@@ -64,7 +100,7 @@ extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
     captureOutput: AVCaptureFileOutput!,
     didStartRecordingToOutputFileAtURL fileURL: NSURL!,
                                        fromConnections connections: [AnyObject]!) {
-    //
+    print("recording started")
   }
 
   func captureOutput(
@@ -72,5 +108,8 @@ extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
     didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
                                         fromConnections connections: [AnyObject]!,
                                                         error: NSError!) {
+    print("recording finished")
+    guard let completion = videoCompletion else { return }
+    completion?(file: outputFileURL, error: error)
   }
 }

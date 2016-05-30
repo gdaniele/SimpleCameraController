@@ -25,6 +25,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
   private let session: AVCaptureSession
   private let sessionQueue: dispatch_queue_t
   private var stillImageOutput: AVCaptureStillImageOutput? = nil
+  private var movieFileOutput: AVCaptureMovieFileOutput? = nil
   private var videoDeviceInput: AVCaptureDeviceInput? = nil
 
   private let authorizer: Authorizer.Type
@@ -35,8 +36,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
   // MARK:-  State
   private var outputMode: CameraOutputMode = .StillImage
   private var setupResult: CameraControllerSetupResult = .NotDetermined
-  // used to automatically update device orientation changes in video recording
-  private weak var previewView: UIView?
 
   public override init() {
     self.authorizer = AVAuthorizer.self
@@ -47,6 +46,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
     self.sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL)
 
     super.init()
+
+    session.sessionPreset = AVCaptureSessionPresetLow
   }
 
   // MARK:- Public Properties
@@ -121,8 +122,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   public func connectCameraToView(previewView: UIView,
                                   completion: ConnectCameraControllerCallback) {
-    self.previewView = previewView
-
     guard camera.cameraSupported else {
       setupResult = .ConfigurationFailed
       completion?(didSucceed: false, error: CameraControllerAuthorizationError.NotSupported)
@@ -132,7 +131,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
     switch setupResult {
     case .Running:
       addPreviewLayerToView(previewView, completion: completion)
-    case .ConfigurationFailed, .NotAuthorized, .NotDetermined, .Restricted, .Stopped, .Success:
+    case .ConfigurationFailed:
+      completion?(didSucceed: false, error: CameraControllerAuthorizationError.NotSupported)
+    case .NotAuthorized, .NotDetermined, .Restricted, .Stopped, .Success:
 
       // Check authorization status and requests camera permissions if necessary
       switch authorizer.videoStatus {
@@ -190,13 +191,48 @@ public class AVFoundationCameraController: NSObject, CameraController {
     session.startRunning()
   }
 
+  /// Authorizes mic if necessary
   public func startVideoRecording() {
+    session.removeOutput(stillImageOutput)
     stillImageOutput = nil
-    camcorder.startVideoRecording()
+
+    // Request mic access if need be
+    switch authorizer.audioStatus {
+    case .NotDetermined:
+      authorizer.requestAccessForAudio(nil)
+    default:
+      break
+    }
+
+    if movieFileOutput == nil {
+      captureSessionMaker.setUpMovieCaptureSession(session,
+                                                   sessionQueue: sessionQueue,
+                                                   completion: { movieFileOutput, error in
+                                                    guard let movieFileOutput = movieFileOutput where error == nil else {
+                                                      print("Error starting video recording: \(error)")
+                                                      return
+                                                    }
+                                                    self.movieFileOutput = movieFileOutput
+                                                    self.camcorder.startVideoRecording(movieFileOutput,
+                                                      session: self.session,
+                                                      sessionQueue: self.sessionQueue)
+      })
+      return
+    }
+
+    guard let movieFileOutput = movieFileOutput else { return }
+    camcorder.startVideoRecording(movieFileOutput,
+                                  session: session,
+                                  sessionQueue: sessionQueue)
   }
 
   public func stopVideoRecording(completion: VideoCaptureCallback) {
-    camcorder.stopVideoRecording()
+    guard let movieFileOutput = movieFileOutput else {
+      completion?(file: nil, error: CamcorderError.NotRunning)
+      return
+    }
+
+    camcorder.stopVideoRecording(movieFileOutput, completion: completion)
   }
 
   public func takePhoto(completion: ImageCaptureCallback) {
@@ -205,9 +241,26 @@ public class AVFoundationCameraController: NSObject, CameraController {
       return
     }
     guard let stillImageOutput = stillImageOutput else {
-      completion?(image: nil, error: CameraControllerError.WrongConfiguration)
+      captureSessionMaker.setUpStillImageCaptureSession(session,
+                                                        sessionQueue: sessionQueue,
+                                                        completion: { stillImageOutput, error in
+                                                          guard let stillImageOutput = stillImageOutput
+                                                            where error == nil else {
+                                                              completion?(image: nil, error: error)
+                                                              return
+                                                          }
+                                                          self.stillImageOutput = stillImageOutput
+
+                                                          self.session.removeOutput(self.movieFileOutput)
+                                                          self.movieFileOutput = nil
+                                                          self.camera.takePhoto(self.sessionQueue,
+                                                            stillImageOutput: stillImageOutput,
+                                                            completion: completion)
+      })
       return
     }
+    session.removeOutput(movieFileOutput)
+    movieFileOutput = nil
     camera.takePhoto(sessionQueue,
                      stillImageOutput: stillImageOutput,
                      completion: completion)
@@ -277,8 +330,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
                                                         dispatch_async(self.sessionQueue, {
                                                           self.session.startRunning()
                                                           self.setupResult = .Running
-                                                          completion?(didSucceed: true, error: nil)
-                                                          self.addPreviewLayerToView(previewView, completion: completion)
+                                                          self.addPreviewLayerToView(previewView,
+                                                            completion: completion)
                                                           return
                                                         })
     })
