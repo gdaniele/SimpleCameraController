@@ -70,6 +70,7 @@ public enum CameraControllerSetupResult: String {
 public enum CameraOutputMode {
   case StillImage
   case Video
+  case Both
 }
 
 /*!

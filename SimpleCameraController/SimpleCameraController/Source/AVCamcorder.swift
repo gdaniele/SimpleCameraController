@@ -12,26 +12,64 @@ import Foundation
 // MARK: Internal interfaces defining more specific camera concerns
 
 protocol Camcorder {
-  func startVideoRecording()
-  func stopVideoRecording()
+  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                           session: AVCaptureSession,
+                           sessionQueue: dispatch_queue_t)
+  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                          completion: VideoCaptureCallback)
+}
+
+typealias CamcorderCallback = ((success: Bool, error: CamcorderError?) -> ())?
+
+public enum CamcorderError: ErrorType {
+  case MicError
+  case MicDenied
+  case MicRestricted
+  case NotRunning
 }
 
 class AVCamcorder: NSObject, Camcorder {
-  private weak var captureSession: AVCaptureSession?
+  private let authorizer: Authorizer.Type = AVAuthorizer.self
+  private let sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 
-  required init(captureSession: AVCaptureSession?) {
-    self.captureSession = captureSession
-    super.init()
+  private var videoCompletion: VideoCaptureCallback? =  nil
+
+  func startVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                           session: AVCaptureSession,
+                           sessionQueue: dispatch_queue_t) {
+    sessionMaker.addAudioInputToSession(session,
+                                        sessionQueue: sessionQueue,
+                                        completion: { success in
+                                          if success {
+                                            movieFileOutput.startRecordingToOutputFileURL(self.temporaryFilePath,
+                                              recordingDelegate: self)
+                                          }
+    })
   }
 
-  func startVideoRecording() {
+  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                          completion: VideoCaptureCallback) {
+    if movieFileOutput.recording {
+      videoCompletion = completion
+      movieFileOutput.stopRecording()
+    }
   }
 
-  func stopVideoRecording() {
-    //
+  // MARK: Private
+
+  private static func createMovieOutput(session: AVCaptureSession) -> AVCaptureMovieFileOutput {
+    let movieOutput = AVCaptureMovieFileOutput()
+    movieOutput.movieFragmentInterval = kCMTimeInvalid
+
+    session.beginConfiguration()
+    session.addOutput(movieOutput)
+    session.commitConfiguration()
+
+    return movieOutput
   }
 
   // MARK: Private lazy
+
   private var temporaryFilePath: NSURL = {
     let temporaryFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory())
       .URLByAppendingPathComponent("temporary-recording")
@@ -45,21 +83,6 @@ class AVCamcorder: NSObject, Camcorder {
     }
     return NSURL(string: temporaryFilePath)!
   }()
-  private lazy var mic: AVCaptureDevice? = {
-    return AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio)
-  }()
-  private lazy var movieOutput: AVCaptureMovieFileOutput? = {
-    let movieOutput = AVCaptureMovieFileOutput()
-    movieOutput.movieFragmentInterval = kCMTimeInvalid
-
-    guard let captureSession = self.captureSession else { return nil }
-
-    captureSession.beginConfiguration()
-    captureSession.addOutput(movieOutput)
-    captureSession.commitConfiguration()
-
-    return movieOutput
-  }()
 }
 
 extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
@@ -67,7 +90,7 @@ extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
     captureOutput: AVCaptureFileOutput!,
     didStartRecordingToOutputFileAtURL fileURL: NSURL!,
                                        fromConnections connections: [AnyObject]!) {
-    //
+    print("recording started")
   }
 
   func captureOutput(
@@ -75,5 +98,8 @@ extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
     didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
                                         fromConnections connections: [AnyObject]!,
                                                         error: NSError!) {
+    print("recording finished")
+    guard let completion = videoCompletion else { return }
+    completion?(file: outputFileURL, error: error)
   }
 }

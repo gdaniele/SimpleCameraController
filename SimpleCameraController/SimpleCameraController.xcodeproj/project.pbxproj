@@ -7,14 +7,14 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		B31C88B21CFBA2EB008EED1E /* AVAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */; };
-		B31C88B31CFBA2EB008EED1E /* AVCamcorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */; };
-		B31C88B41CFBA2EB008EED1E /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */; };
-		B31C88B51CFBA2EB008EED1E /* AVCaptureSessionMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */; };
-		B31C88B61CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */; };
-		B31C88B71CFBA2EB008EED1E /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */; };
-		B31C88B81CFBA2EB008EED1E /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B11CFBA2EB008EED1E /* PreviewView.swift */; };
-		B31C88BA1CFBA302008EED1E /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88B91CFBA302008EED1E /* CameraController.swift */; };
+		B31C88D81CFBCAC7008EED1E /* AVAuthorizer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D01CFBCAC7008EED1E /* AVAuthorizer.swift */; };
+		B31C88D91CFBCAC7008EED1E /* AVCamcorder.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D11CFBCAC7008EED1E /* AVCamcorder.swift */; };
+		B31C88DA1CFBCAC7008EED1E /* AVCamera.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D21CFBCAC7008EED1E /* AVCamera.swift */; };
+		B31C88DB1CFBCAC7008EED1E /* AVCaptureSessionMaker.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D31CFBCAC7008EED1E /* AVCaptureSessionMaker.swift */; };
+		B31C88DC1CFBCAC7008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D41CFBCAC7008EED1E /* AVCaptureVideoOrientationTransformer.swift */; };
+		B31C88DD1CFBCAC7008EED1E /* AVFoundationCameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D51CFBCAC7008EED1E /* AVFoundationCameraController.swift */; };
+		B31C88DE1CFBCAC7008EED1E /* CameraController.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D61CFBCAC7008EED1E /* CameraController.swift */; };
+		B31C88DF1CFBCAC7008EED1E /* PreviewView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B31C88D71CFBCAC7008EED1E /* PreviewView.swift */; };
 		B345AB751CC13BA600CEC02F /* SimpleCameraController.h in Headers */ = {isa = PBXBuildFile; fileRef = B345AB741CC13BA600CEC02F /* SimpleCameraController.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		B345AB7C1CC13BA600CEC02F /* SimpleCameraController.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = B345AB711CC13BA600CEC02F /* SimpleCameraController.framework */; };
 		B345AB811CC13BA600CEC02F /* SimpleCameraControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = B345AB801CC13BA600CEC02F /* SimpleCameraControllerTests.swift */; };
@@ -33,14 +33,14 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAuthorizer.swift; sourceTree = "<group>"; };
-		B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamcorder.swift; sourceTree = "<group>"; };
-		B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
-		B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureSessionMaker.swift; sourceTree = "<group>"; };
-		B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
-		B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
-		B31C88B11CFBA2EB008EED1E /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
-		B31C88B91CFBA302008EED1E /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		B31C88D01CFBCAC7008EED1E /* AVAuthorizer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVAuthorizer.swift; sourceTree = "<group>"; };
+		B31C88D11CFBCAC7008EED1E /* AVCamcorder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamcorder.swift; sourceTree = "<group>"; };
+		B31C88D21CFBCAC7008EED1E /* AVCamera.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCamera.swift; sourceTree = "<group>"; };
+		B31C88D31CFBCAC7008EED1E /* AVCaptureSessionMaker.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureSessionMaker.swift; sourceTree = "<group>"; };
+		B31C88D41CFBCAC7008EED1E /* AVCaptureVideoOrientationTransformer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVCaptureVideoOrientationTransformer.swift; sourceTree = "<group>"; };
+		B31C88D51CFBCAC7008EED1E /* AVFoundationCameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AVFoundationCameraController.swift; sourceTree = "<group>"; };
+		B31C88D61CFBCAC7008EED1E /* CameraController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CameraController.swift; sourceTree = "<group>"; };
+		B31C88D71CFBCAC7008EED1E /* PreviewView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewView.swift; sourceTree = "<group>"; };
 		B345AB711CC13BA600CEC02F /* SimpleCameraController.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SimpleCameraController.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		B345AB741CC13BA600CEC02F /* SimpleCameraController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SimpleCameraController.h; sourceTree = "<group>"; };
 		B345AB761CC13BA600CEC02F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -110,14 +110,14 @@
 		B345AB8B1CC13BB300CEC02F /* Source */ = {
 			isa = PBXGroup;
 			children = (
-				B31C88B91CFBA302008EED1E /* CameraController.swift */,
-				B31C88AB1CFBA2EB008EED1E /* AVAuthorizer.swift */,
-				B31C88AC1CFBA2EB008EED1E /* AVCamcorder.swift */,
-				B31C88AD1CFBA2EB008EED1E /* AVCamera.swift */,
-				B31C88AE1CFBA2EB008EED1E /* AVCaptureSessionMaker.swift */,
-				B31C88AF1CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift */,
-				B31C88B01CFBA2EB008EED1E /* AVFoundationCameraController.swift */,
-				B31C88B11CFBA2EB008EED1E /* PreviewView.swift */,
+				B31C88D01CFBCAC7008EED1E /* AVAuthorizer.swift */,
+				B31C88D11CFBCAC7008EED1E /* AVCamcorder.swift */,
+				B31C88D21CFBCAC7008EED1E /* AVCamera.swift */,
+				B31C88D31CFBCAC7008EED1E /* AVCaptureSessionMaker.swift */,
+				B31C88D41CFBCAC7008EED1E /* AVCaptureVideoOrientationTransformer.swift */,
+				B31C88D51CFBCAC7008EED1E /* AVFoundationCameraController.swift */,
+				B31C88D61CFBCAC7008EED1E /* CameraController.swift */,
+				B31C88D71CFBCAC7008EED1E /* PreviewView.swift */,
 				B345AB8D1CC13BB300CEC02F /* CameraControl.h */,
 				B345AB8F1CC13BB300CEC02F /* Info.plist */,
 			);
@@ -251,14 +251,14 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B31C88B21CFBA2EB008EED1E /* AVAuthorizer.swift in Sources */,
-				B31C88B51CFBA2EB008EED1E /* AVCaptureSessionMaker.swift in Sources */,
-				B31C88B81CFBA2EB008EED1E /* PreviewView.swift in Sources */,
-				B31C88B71CFBA2EB008EED1E /* AVFoundationCameraController.swift in Sources */,
-				B31C88B61CFBA2EB008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */,
-				B31C88B31CFBA2EB008EED1E /* AVCamcorder.swift in Sources */,
-				B31C88BA1CFBA302008EED1E /* CameraController.swift in Sources */,
-				B31C88B41CFBA2EB008EED1E /* AVCamera.swift in Sources */,
+				B31C88D81CFBCAC7008EED1E /* AVAuthorizer.swift in Sources */,
+				B31C88DF1CFBCAC7008EED1E /* PreviewView.swift in Sources */,
+				B31C88DB1CFBCAC7008EED1E /* AVCaptureSessionMaker.swift in Sources */,
+				B31C88DE1CFBCAC7008EED1E /* CameraController.swift in Sources */,
+				B31C88DD1CFBCAC7008EED1E /* AVFoundationCameraController.swift in Sources */,
+				B31C88DC1CFBCAC7008EED1E /* AVCaptureVideoOrientationTransformer.swift in Sources */,
+				B31C88D91CFBCAC7008EED1E /* AVCamcorder.swift in Sources */,
+				B31C88DA1CFBCAC7008EED1E /* AVCamera.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

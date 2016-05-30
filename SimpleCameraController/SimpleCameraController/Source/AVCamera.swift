@@ -25,9 +25,6 @@ protocol Camera {
                         completion: ImageCaptureCallback)
 }
 
-typealias StillImageOutputCallback = ((imageOutput: AVCaptureStillImageOutput?,
-  error: ErrorType?) -> ())?
-
 class AVCamera: Camera {
   private static var sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 

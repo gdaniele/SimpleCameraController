@@ -6,11 +6,12 @@
 //  Copyright © 2015 Giancarlo. All rights reserved.
 //
 
+import SimpleCameraController
 import UIKit
 
 class ExampleViewController: UIViewController {
   private var cameraController: CameraController
-  private lazy var previewLayer: PreviewView = {
+  private lazy var previewView: PreviewView = {
     let view = PreviewView()
     view.translatesAutoresizingMaskIntoConstraints = false
 
@@ -28,34 +29,34 @@ class ExampleViewController: UIViewController {
   }
 
   override func loadView() {
-    let view = UIView()
-    view.addSubview(self.previewLayer)
+    let view = UIView(frame: UIScreen.mainScreen().bounds)
+    view.addSubview(self.previewView)
 
     // Sets constraints
-    if let uSuperView = self.previewLayer.superview {
+    if let uSuperView = self.previewView.superview {
       view.addConstraints(
         [
-          NSLayoutConstraint(item: previewLayer,
+          NSLayoutConstraint(item: previewView,
             attribute: .Top, relatedBy: .Equal,
             toItem: uSuperView,
             attribute: .Top,
             multiplier: 1,
             constant: 0),
-          NSLayoutConstraint(item: previewLayer,
+          NSLayoutConstraint(item: previewView,
             attribute: .Bottom,
             relatedBy: .Equal,
             toItem: uSuperView,
             attribute: .Bottom,
             multiplier: 1,
             constant: 0),
-          NSLayoutConstraint(item: previewLayer,
+          NSLayoutConstraint(item: previewView,
             attribute: .Leading,
             relatedBy: .Equal,
             toItem: uSuperView,
             attribute: .Leading,
             multiplier: 1,
             constant: 0),
-          NSLayoutConstraint(item: previewLayer,
+          NSLayoutConstraint(item: previewView,
             attribute: .Trailing,
             relatedBy: .Equal,
             toItem: uSuperView,
@@ -69,45 +70,15 @@ class ExampleViewController: UIViewController {
     self.view = view
   }
 
-  override func updateViewConstraints() {
-    super.updateViewConstraints()
-
-    if self.view.superview != nil && self.view.constraints.isEmpty {
-      let views = ["view": self.view]
-
-      [NSLayoutConstraint.constraintsWithVisualFormat("H:|[view]|",
-        options: NSLayoutFormatOptions(rawValue: 0),
-        metrics: nil,
-        views: views),
-       NSLayoutConstraint.constraintsWithVisualFormat("V:|[view]|",
-        options: NSLayoutFormatOptions(rawValue: 0),
-        metrics: nil,
-        views: views)].forEach({
-          self.view.addConstraints($0)
-        })
-    }
-  }
-
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    cameraController.connectCameraToView(self.previewLayer, completion: { didSucceed, error in
+    cameraController.connectCameraToView(previewView, completion: { didSucceed, error in
       guard didSucceed && error == nil else {
         print("Connect Camera - Error!")
         return
       }
       print("Connect Camera - Success!")
-    })
-
-    delay(2, closure: {
-      self.cameraController.startVideoRecording()
-
-      delay(3, closure: {
-        self.cameraController.stopVideoRecording(nil)
-        self.cameraController.takePhoto({ image in
-          print("Get \(image)")
-        })
-      })
     })
   }
 }
