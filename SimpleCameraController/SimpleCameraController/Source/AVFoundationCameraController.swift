@@ -287,6 +287,9 @@ public class AVFoundationCameraController: NSObject, CameraController {
   // Adds session to preview layer
   private func addPreviewLayerToView(previewView: UIView,
                                      completion: ((Bool, ErrorType?) -> ())?) {
+    guard !(previewView.layer.sublayers?.first is AVCaptureVideoPreviewLayer) else {
+      return
+    }
     dispatch_async(dispatch_get_main_queue()) {
       guard let previewLayer = self.previewLayer else {
         completion?(false, CameraControllerError.SetupFailed)
