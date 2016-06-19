@@ -75,16 +75,16 @@ class AVCamcorder: NSObject, Camcorder {
 
   private var temporaryFilePath: NSURL = {
     let temporaryFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory())
-      .URLByAppendingPathComponent("temporary-recording")
-      .URLByAppendingPathExtension("mp4")
+      .URLByAppendingPathComponent("temporary-recording")!
+      .URLByAppendingPathExtension("mp4")!
       .absoluteString
 
-    if NSFileManager.defaultManager().fileExistsAtPath(temporaryFilePath) {
+    if NSFileManager.defaultManager().fileExistsAtPath(temporaryFilePath!) {
       do {
-        try NSFileManager.defaultManager().removeItemAtPath(temporaryFilePath)
+        try NSFileManager.defaultManager().removeItemAtPath(temporaryFilePath!)
       } catch { }
     }
-    return NSURL(string: temporaryFilePath)!
+    return NSURL(string: temporaryFilePath!)!
   }()
 }
 
