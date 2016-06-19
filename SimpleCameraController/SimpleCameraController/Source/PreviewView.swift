@@ -13,15 +13,15 @@ public class PreviewView: UIView {
   override public init(frame: CGRect) {
     super.init(frame: frame)
 
-    NSNotificationCenter.defaultCenter()
+    NotificationCenter.default()
       .addObserver(self,
                    selector: #selector(PreviewView.orientationChanged),
-                   name: UIApplicationDidChangeStatusBarOrientationNotification,
+                   name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation,
                    object: nil)
   }
 
   deinit {
-    NSNotificationCenter.defaultCenter().removeObserver(self)
+    NotificationCenter.default().removeObserver(self)
   }
 
   required public init?(coder aDecoder: NSCoder) {
@@ -29,7 +29,7 @@ public class PreviewView: UIView {
   }
 
   internal func orientationChanged() {
-    let deviceOrientation = UIApplication.sharedApplication().statusBarOrientation
+    let deviceOrientation = UIApplication.shared().statusBarOrientation
 
     guard let orientation = AVCaptureVideoOrientationTransformer
       .videoOrientationFromUIInterfaceOrientation(deviceOrientation)
@@ -38,7 +38,7 @@ public class PreviewView: UIView {
     }
 
     guard let layer = previewLayer,
-      let connection = layer.connection where connection.supportsVideoOrientation else {
+      let connection = layer.connection where connection.isVideoOrientationSupported else {
         return
     }
 

@@ -15,12 +15,12 @@ protocol Camera {
   static var backCaptureDevice: AVCaptureDevice? { get }
   static var frontCaptureDevice: AVCaptureDevice? { get }
 
-  static func setFlashMode(flashMode: AVCaptureFlashMode,
+  static func setFlashMode(_ flashMode: AVCaptureFlashMode,
                            session: AVCaptureSession,
                            backCaptureDevice: AVCaptureDevice) throws
-  static func setPosition(position: AVCaptureDevicePosition,
+  static func setPosition(_ position: AVCaptureDevicePosition,
                           session: AVCaptureSession) throws -> AVCaptureDeviceInput
-  static func takePhoto(sessionQueue: dispatch_queue_t,
+  static func takePhoto(_ sessionQueue: DispatchQueue,
                         stillImageOutput: AVCaptureStillImageOutput,
                         completion: ImageCaptureCallback)
 }
@@ -29,19 +29,19 @@ class AVCamera: Camera {
   private static var sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 
   static var backCaptureDevice: AVCaptureDevice? {
-    return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .Back)
+    return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .back)
   }
 
   static var frontCaptureDevice: AVCaptureDevice? {
-    return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .Front)
+    return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .front)
   }
 
   static var cameraSupported: Bool {
     get {
       guard UIImagePickerController
-        .isCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Rear)
+        .isCameraDeviceAvailable(UIImagePickerControllerCameraDevice.rear)
         || UIImagePickerController
-          .isCameraDeviceAvailable(UIImagePickerControllerCameraDevice.Front)
+          .isCameraDeviceAvailable(UIImagePickerControllerCameraDevice.front)
         else {
           return false
       }
@@ -49,14 +49,14 @@ class AVCamera: Camera {
     }
   }
 
-  static func setFlashMode(flashMode: AVCaptureFlashMode,
+  static func setFlashMode(_ flashMode: AVCaptureFlashMode,
                            session: AVCaptureSession,
                            backCaptureDevice: AVCaptureDevice) throws {
     session.beginConfiguration()
 
     guard backCaptureDevice.hasFlash &&
       backCaptureDevice.isFlashModeSupported(flashMode) else {
-        throw CameraControllerAuthorizationError.NotSupported
+        throw CameraControllerAuthorizationError.notSupported
     }
 
     try backCaptureDevice.lockForConfiguration()
@@ -69,13 +69,13 @@ class AVCamera: Camera {
   /*
    Remove any current video inputs before calling
    */
-  static func setPosition(position: AVCaptureDevicePosition,
+  static func setPosition(_ position: AVCaptureDevicePosition,
                           session: AVCaptureSession) throws -> AVCaptureDeviceInput {
 
     guard let videoDevice = try? AVFoundationCameraController
       .deviceWithMediaType(AVMediaTypeVideo, preferredPosition: position),
       let input = try? AVCaptureDeviceInput(device: videoDevice) else {
-        throw CameraControllerError.SetupFailed
+        throw CameraControllerError.setupFailed
     }
     try sessionMaker.setInputsForVideoDevice(videoDevice,
                                              input: input,
@@ -83,14 +83,14 @@ class AVCamera: Camera {
     return input
   }
 
-  static func takePhoto(sessionQueue: dispatch_queue_t,
+  static func takePhoto(_ sessionQueue: DispatchQueue,
                         stillImageOutput: AVCaptureStillImageOutput,
                         completion: ImageCaptureCallback) {
-    dispatch_async(sessionQueue, {
-      let connection = stillImageOutput.connectionWithMediaType(AVMediaTypeVideo)
+    sessionQueue.async(execute: {
+      let connection = stillImageOutput.connection(withMediaType: AVMediaTypeVideo)
 
       stillImageOutput
-        .captureStillImageAsynchronouslyFromConnection(connection,
+        .captureStillImageAsynchronously(from: connection,
           completionHandler: { imageDataSampleBuffer, receivedError in
             guard receivedError == nil else {
               completion?(image: nil, error: receivedError!)
@@ -99,11 +99,11 @@ class AVCamera: Camera {
             if let uImageDataBuffer = imageDataSampleBuffer {
               let imageData = AVCaptureStillImageOutput
                 .jpegStillImageNSDataRepresentation(uImageDataBuffer)
-              guard let image = UIImage(data: imageData) else {
-                completion?(image: nil, error: CameraControllerError.ImageCaptureFailed)
+              guard let image = UIImage(data: imageData!) else {
+                completion?(image: nil, error: CameraControllerError.imageCaptureFailed)
                 return
               }
-              dispatch_async(dispatch_get_main_queue(), {
+              DispatchQueue.main.async(execute: {
                 completion?(image: image, error: nil)
                 return
               })
@@ -113,13 +113,13 @@ class AVCamera: Camera {
   }
 
   // MARK: Private
-  private static func getDevice(position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+  private static func getDevice(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
     switch position {
-    case .Back:
+    case .back:
       return backCaptureDevice
-    case .Front:
+    case .front:
       return frontCaptureDevice
-    case .Unspecified:
+    case .unspecified:
       return nil
     }
   }
