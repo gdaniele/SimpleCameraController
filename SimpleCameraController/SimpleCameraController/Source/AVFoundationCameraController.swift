@@ -194,6 +194,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
       print("Session is already running")
       return
     }
+    guard setupResult == .Stopped else {
+      print("Session is already running")
+      return
+    }
     session.startRunning()
   }
 
