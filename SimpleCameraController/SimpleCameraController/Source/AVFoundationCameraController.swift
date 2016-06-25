@@ -46,8 +46,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
     self.sessionQueue = dispatch_queue_create("session queue", DISPATCH_QUEUE_SERIAL)
 
     super.init()
-
-    session.sessionPreset = AVCaptureSessionPresetLow
   }
 
   // MARK:- Public Properties
@@ -185,6 +183,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   public func startCaptureSession() {
     guard !session.running else {
+      print("Session is already running")
+      return
+    }
+    guard setupResult == .Stopped else {
       print("Session is already running")
       return
     }
@@ -348,6 +350,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   private func connectCamera(previewView: UIView,
                              completion: ConnectCameraControllerCallback) {
+    session.sessionPreset = AVCaptureSessionPresetLow
     captureSessionMaker.addOutputsToSession(session,
                                             outputMode: outputMode,
                                             sessionQueue: sessionQueue,
