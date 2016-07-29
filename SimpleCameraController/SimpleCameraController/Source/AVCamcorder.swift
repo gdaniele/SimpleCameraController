@@ -82,8 +82,8 @@ class AVCamcorder: NSObject, Camcorder {
           fatalError()
       }
       guard let temporaryFilepath = temporaryFilePath else { fatalError() }
-      if FileManager.default().fileExists(atPath: temporaryFilepath) {
-        try FileManager.default().removeItem(atPath: temporaryFilepath)
+      if FileManager.default.fileExists(atPath: temporaryFilepath) {
+        try FileManager.default.removeItem(atPath: temporaryFilepath)
       }
       return URL(string: temporaryFilepath)
 

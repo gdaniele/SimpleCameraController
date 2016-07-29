@@ -13,7 +13,7 @@ public class PreviewView: UIView {
   override public init(frame: CGRect) {
     super.init(frame: frame)
 
-    NotificationCenter.default()
+    NotificationCenter.default
       .addObserver(self,
                    selector: #selector(PreviewView.orientationChanged),
                    name: NSNotification.Name.UIApplicationDidChangeStatusBarOrientation,
@@ -21,7 +21,7 @@ public class PreviewView: UIView {
   }
 
   deinit {
-    NotificationCenter.default().removeObserver(self)
+    NotificationCenter.default.removeObserver(self)
   }
 
   required public init?(coder aDecoder: NSCoder) {
