@@ -25,20 +25,20 @@ public protocol CameraController {
   var supportsFlash: Bool { get }
   var supportsFrontCamera: Bool { get }
 
-  func connectCameraToView(previewView: UIView, completion: ConnectCameraControllerCallback)
-  func setCameraPosition(position: AVCaptureDevicePosition) throws
-  func setFlashMode(mode: AVCaptureFlashMode) throws
-  func takePhoto(completion: ImageCaptureCallback)
-  func startVideoRecording(completion: VideoCaptureCallback)
-  func stopVideoRecording(completion: VideoCaptureCallback)
+  func connectCameraToView(_ previewView: UIView, completion: ConnectCameraControllerCallback)
+  func setCameraPosition(_ position: AVCaptureDevicePosition) throws
+  func setFlashMode(_ mode: AVCaptureFlashMode) throws
+  func takePhoto(_ completion: ImageCaptureCallback)
+  func startVideoRecording(_ completion: VideoCaptureCallback)
+  func stopVideoRecording(_ completion: VideoCaptureCallback)
 
   func startCaptureSession()
   func stopCaptureSession()
 }
 
-public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorType?) -> ())?
-public typealias VideoCaptureCallback = ((file: NSURL?, error: ErrorType?) -> ())?
-public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: ErrorType?)-> ())?
+public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorProtocol?) -> ())?
+public typealias VideoCaptureCallback = ((file: URL?, error: ErrorProtocol?) -> ())?
+public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: ErrorProtocol?)-> ())?
 
 // MARK:- State
 
@@ -71,9 +71,9 @@ public enum CameraControllerSetupResult: String {
  CameraOutputMode represents possibilities for camera output (e.g. still image and video)
  */
 public enum CameraOutputMode {
-  case StillImage
-  case Video
-  case Both
+  case stillImage
+  case video
+  case both
 }
 
 /*!
@@ -82,9 +82,9 @@ public enum CameraOutputMode {
  `CaptureQuality` represents AVCaptureSessionPreset camera quality
  */
 public enum CaptureQuality {
-  case High
-  case Medium
-  case Low
+  case high
+  case medium
+  case low
 }
 
 /*!
@@ -93,8 +93,8 @@ public enum CaptureQuality {
  CameraSupportedFeature represents hardware features of CameraController managed camera
  */
 public enum CameraSupportedFeature {
-  case Flash
-  case FrontCamera
+  case flash
+  case frontCamera
 }
 
 // MARK:- Errors
@@ -105,11 +105,11 @@ public enum CameraSupportedFeature {
  `CameraControllerError` represents CameraController API-level error resulting from incorrect usage
  or other failures
  */
-public enum CameraControllerError: ErrorType {
-  case ImageCaptureFailed
-  case NotRunning
-  case SetupFailed
-  case WrongConfiguration
+public enum CameraControllerError: ErrorProtocol {
+  case imageCaptureFailed
+  case notRunning
+  case setupFailed
+  case wrongConfiguration
 }
 
 /*!
@@ -121,8 +121,8 @@ public enum CameraControllerError: ErrorType {
  Camera controller may fail to function due to a variety of setup and permissions errors
  represented in this enum.
  */
-public enum CameraControllerAuthorizationError: ErrorType {
-  case NotAuthorized
-  case Restricted
-  case NotSupported
+public enum CameraControllerAuthorizationError: ErrorProtocol {
+  case notAuthorized
+  case restricted
+  case notSupported
 }

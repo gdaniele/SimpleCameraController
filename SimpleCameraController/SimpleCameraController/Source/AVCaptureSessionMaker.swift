@@ -15,27 +15,27 @@ internal typealias CaptureSessionCallback = ((movieFileOutput: AVCaptureMovieFil
   imageOutput: AVCaptureStillImageOutput?) -> ())?
 
 protocol CaptureSessionMaker {
-  static func setInputsForVideoDevice(videoDevice: AVCaptureDevice,
+  static func setInputsForVideoDevice(_ videoDevice: AVCaptureDevice,
                                       input: AVCaptureDeviceInput,
                                       session: AVCaptureSession) throws
-  static func addOutputsToSession(session: AVCaptureSession,
+  static func addOutputsToSession(_ session: AVCaptureSession,
                                   outputMode: CameraOutputMode,
-                                  sessionQueue: dispatch_queue_t,
+                                  sessionQueue: DispatchQueue,
                                   completion: CaptureSessionCallback)
-  static func addAudioInputToSession(session: AVCaptureSession,
-                                      sessionQueue: dispatch_queue_t,
+  static func addAudioInputToSession(_ session: AVCaptureSession,
+                                      sessionQueue: DispatchQueue,
                                       completion: ((Bool) -> ())?)
-  static func addMovieOutputToSession(session: AVCaptureSession,
-                                       sessionQueue: dispatch_queue_t,
+  static func addMovieOutputToSession(_ session: AVCaptureSession,
+                                       sessionQueue: DispatchQueue,
                                        completion: MovieFileOutputCallback)
-  static func addStillImageOutputToSession(session: AVCaptureSession,
-                                            sessionQueue: dispatch_queue_t,
+  static func addStillImageOutputToSession(_ session: AVCaptureSession,
+                                            sessionQueue: DispatchQueue,
                                             completion: StillImageOutputCallback)
 }
 
 struct AVCaptureSessionMaker: CaptureSessionMaker {
 
-  static func setInputsForVideoDevice(videoDevice: AVCaptureDevice,
+  static func setInputsForVideoDevice(_ videoDevice: AVCaptureDevice,
                                       input: AVCaptureDeviceInput,
                                       session: AVCaptureSession) throws {
     // add inputs and commit config
@@ -43,64 +43,64 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
     session.sessionPreset = AVCaptureSessionPresetHigh
 
     guard session.canAddInput(input) else {
-      throw CameraControllerError.SetupFailed
+      throw CameraControllerError.setupFailed
     }
 
     session.addInput(input)
     session.commitConfiguration()
   }
 
-  static func addAudioInputToSession(session: AVCaptureSession,
-                                      sessionQueue: dispatch_queue_t,
+  static func addAudioInputToSession(_ session: AVCaptureSession,
+                                      sessionQueue: DispatchQueue,
                                       completion: ((Bool) -> ())?) {
     session.beginConfiguration()
-    dispatch_async(sessionQueue, {
+    sessionQueue.async(execute: {
       addAudioInputToSession(session)
       session.commitConfiguration()
-      dispatch_async(dispatch_get_main_queue(), {
+      DispatchQueue.main.async(execute: {
         completion?(true)
       })
     })
   }
 
-  static func addOutputsToSession(session: AVCaptureSession,
+  static func addOutputsToSession(_ session: AVCaptureSession,
                                   outputMode: CameraOutputMode,
-                                  sessionQueue: dispatch_queue_t,
+                                  sessionQueue: DispatchQueue,
                                   completion: CaptureSessionCallback) {
     session.beginConfiguration()
-    dispatch_async(sessionQueue, { () in
+    sessionQueue.async(execute: { () in
 
       var movieFileOutput: AVCaptureMovieFileOutput?
       var stillImageOutput: AVCaptureStillImageOutput?
       switch outputMode {
-      case .Both:
+      case .both:
         addAudioInputToSession(session)
         movieFileOutput = addMovieFileOutputToSession(session)
         stillImageOutput = addStillImageOutputToSession(session)
-      case .StillImage:
+      case .stillImage:
         stillImageOutput = addStillImageOutputToSession(session)
-      case .Video:
+      case .video:
         movieFileOutput = addMovieFileOutputToSession(session)
       }
       session.commitConfiguration()
-      dispatch_async(dispatch_get_main_queue(), {
+      DispatchQueue.main.async(execute: {
         completion?(movieFileOutput: movieFileOutput,
           imageOutput: stillImageOutput)
       })
     })
   }
 
-  static func addMovieOutputToSession(session: AVCaptureSession,
-                                       sessionQueue: dispatch_queue_t,
+  static func addMovieOutputToSession(_ session: AVCaptureSession,
+                                       sessionQueue: DispatchQueue,
                                        completion: MovieFileOutputCallback) {
     session.beginConfiguration()
-    dispatch_async(sessionQueue, { () in
+    sessionQueue.async(execute: { () in
       addAudioInputToSession(session)
       let movieFileOutput = addMovieFileOutputToSession(session)
 
       session.commitConfiguration()
 
-      dispatch_async(dispatch_get_main_queue(), {
+      DispatchQueue.main.async(execute: {
         completion?(movieFileOutput: movieFileOutput)
       })
     })
@@ -111,17 +111,17 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   // Note: AVCaptureSession.startRunning is synchronous and might take a while to
   // execute. For this reason, we start the session on the coordinated shared `sessionQueue`
   // (and use that queue to access the camera in any further actions)
-  static func addStillImageOutputToSession(session: AVCaptureSession,
-                                            sessionQueue: dispatch_queue_t,
+  static func addStillImageOutputToSession(_ session: AVCaptureSession,
+                                            sessionQueue: DispatchQueue,
                                             completion: StillImageOutputCallback) {
     session.beginConfiguration()
-    dispatch_async(sessionQueue, { () in
+    sessionQueue.async(execute: { () in
 
       let stillImageOutput = addStillImageOutputToSession(session)
 
       session.commitConfiguration()
 
-      dispatch_async(dispatch_get_main_queue(), {
+      DispatchQueue.main.async(execute: {
         completion?(imageOutput: stillImageOutput)
       })
     })
@@ -130,8 +130,8 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   // MARK: Private
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addAudioInputToSession(session: AVCaptureSession) {
-    guard let mic = AVCaptureDevice.defaultDeviceWithMediaType(AVMediaTypeAudio) else {
+  private static func addAudioInputToSession(_ session: AVCaptureSession) {
+    guard let mic = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio) else {
       return
     }
     do {
@@ -145,7 +145,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addMovieFileOutputToSession(session: AVCaptureSession)
+  private static func addMovieFileOutputToSession(_ session: AVCaptureSession)
     -> AVCaptureMovieFileOutput {
     let movieFileOutput = AVCaptureMovieFileOutput()
     movieFileOutput.maxRecordedDuration = CMTimeMakeWithSeconds(10, 30)
@@ -157,7 +157,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addStillImageOutputToSession(session: AVCaptureSession)
+  private static func addStillImageOutputToSession(_ session: AVCaptureSession)
     -> AVCaptureStillImageOutput {
       let stillImageOutput = AVCaptureStillImageOutput()
 

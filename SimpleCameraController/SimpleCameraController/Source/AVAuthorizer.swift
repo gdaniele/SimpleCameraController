@@ -16,24 +16,24 @@ protocol Authorizer {
   static var supportsFrontCamera: Bool { get }
   static var supportsFlash: Bool { get }
 
-  static func requestAccessForAudio(completion: AuthorizationBlock)
-  static func requestAccessForVideo(completion: AuthorizationBlock)
+  static func requestAccessForAudio(_ completion: AuthorizationBlock)
+  static func requestAccessForVideo(_ completion: AuthorizationBlock)
 }
 
 struct AVAuthorizer: Authorizer {
   private static let camera: Camera.Type = AVCamera.self
   private static let authorizationBlock: (granted: Bool, block: AuthorizationBlock) -> ()
     = { granted, block in
-      dispatch_async(dispatch_get_main_queue(), {
+      DispatchQueue.main.async(execute: {
         block?(granted)
       })
   }
 
   static var audioStatus: AVAuthorizationStatus {
-    return AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeAudio)
+    return AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeAudio)
   }
   static var videoStatus: AVAuthorizationStatus {
-    return AVCaptureDevice.authorizationStatusForMediaType(AVMediaTypeVideo)
+    return AVCaptureDevice.authorizationStatus(forMediaType: AVMediaTypeVideo)
   }
 
   static var supportsFlash: Bool {
@@ -42,18 +42,18 @@ struct AVAuthorizer: Authorizer {
 
   static var supportsFrontCamera: Bool {
     return AVFoundationCameraController
-      .availableCaptureDevicePositionsWithMediaType(AVMediaTypeVideo).contains(.Front)
+      .availableCaptureDevicePositionsWithMediaType(AVMediaTypeVideo).contains(.front)
   }
 
-  static func requestAccessForAudio(completion: ((Bool) -> ())?) {
-    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeAudio,
+  static func requestAccessForAudio(_ completion: ((Bool) -> ())?) {
+    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio,
                                               completionHandler: {
                                                 authorizationBlock(granted: $0, block: completion)
     })
   }
 
-  static func requestAccessForVideo(completion: ((Bool) -> ())?) {
-    AVCaptureDevice.requestAccessForMediaType(AVMediaTypeVideo,
+  static func requestAccessForVideo(_ completion: ((Bool) -> ())?) {
+    AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo,
                                               completionHandler: {
                                                 authorizationBlock(granted: $0, block: completion)
     })

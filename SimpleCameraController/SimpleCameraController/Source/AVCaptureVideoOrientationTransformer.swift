@@ -20,17 +20,17 @@ import UIKit
  the current iOS device's UI and the enum representing AVFoundation orientation possibilities.
  */
 struct AVCaptureVideoOrientationTransformer {
-  static func videoOrientationFromUIInterfaceOrientation(orientation: UIInterfaceOrientation)
+  static func videoOrientationFromUIInterfaceOrientation(_ orientation: UIInterfaceOrientation)
     -> AVCaptureVideoOrientation? {
     switch orientation {
-    case .Portrait:
-      return .Portrait
-    case .PortraitUpsideDown:
-      return .PortraitUpsideDown
-    case .LandscapeRight:
-      return .LandscapeRight
-    case .LandscapeLeft:
-      return .LandscapeLeft
+    case .portrait:
+      return .portrait
+    case .portraitUpsideDown:
+      return .portraitUpsideDown
+    case .landscapeRight:
+      return .landscapeRight
+    case .landscapeLeft:
+      return .landscapeLeft
     default: return nil
     }
   }

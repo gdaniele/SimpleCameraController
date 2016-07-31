@@ -12,21 +12,21 @@ import Foundation
 // MARK: Internal interfaces defining more specific camera concerns
 
 protocol Camcorder {
-  func startVideoRecording(completion: VideoCaptureCallback,
+  func startVideoRecording(_ completion: VideoCaptureCallback,
                            movieFileOutput: AVCaptureMovieFileOutput,
                            session: AVCaptureSession,
-                           sessionQueue: dispatch_queue_t)
-  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+                           sessionQueue: DispatchQueue)
+  func stopVideoRecording(_ movieFileOutput: AVCaptureMovieFileOutput,
                           completion: VideoCaptureCallback)
 }
 
 typealias CamcorderCallback = ((success: Bool, error: CamcorderError?) -> ())?
 
-public enum CamcorderError: ErrorType {
-  case MicError
-  case MicDenied
-  case MicRestricted
-  case NotRunning
+public enum CamcorderError: ErrorProtocol {
+  case micError
+  case micDenied
+  case micRestricted
+  case notRunning
 }
 
 class AVCamcorder: NSObject, Camcorder {
@@ -35,24 +35,24 @@ class AVCamcorder: NSObject, Camcorder {
 
   private var videoCompletion: VideoCaptureCallback? =  nil
 
-  func startVideoRecording(completion: VideoCaptureCallback = nil,
+  func startVideoRecording(_ completion: VideoCaptureCallback = nil,
                            movieFileOutput: AVCaptureMovieFileOutput,
                            session: AVCaptureSession,
-                           sessionQueue: dispatch_queue_t) {
+                           sessionQueue: DispatchQueue) {
     videoCompletion = completion
     sessionMaker
       .addAudioInputToSession(session,
                               sessionQueue: sessionQueue,
                               completion: { success in
                                 movieFileOutput
-                                  .startRecordingToOutputFileURL(self.temporaryFilePath,
+                                  .startRecording(toOutputFileURL: self.temporaryFilePath,
                                     recordingDelegate: self)
       })
   }
 
-  func stopVideoRecording(movieFileOutput: AVCaptureMovieFileOutput,
+  func stopVideoRecording(_ movieFileOutput: AVCaptureMovieFileOutput,
                           completion: VideoCaptureCallback) {
-    if movieFileOutput.recording {
+    if movieFileOutput.isRecording {
       videoCompletion = completion
       movieFileOutput.stopRecording()
     }
@@ -60,7 +60,7 @@ class AVCamcorder: NSObject, Camcorder {
 
   // MARK: Private
 
-  private static func createMovieOutput(session: AVCaptureSession) -> AVCaptureMovieFileOutput {
+  private static func createMovieOutput(_ session: AVCaptureSession) -> AVCaptureMovieFileOutput {
     let movieOutput = AVCaptureMovieFileOutput()
     movieOutput.movieFragmentInterval = kCMTimeInvalid
 
@@ -73,32 +73,35 @@ class AVCamcorder: NSObject, Camcorder {
 
   // MARK: Private lazy
 
-  private var temporaryFilePath: NSURL = {
-    let temporaryFilePath = NSURL(fileURLWithPath: NSTemporaryDirectory())
-      .URLByAppendingPathComponent("temporary-recording")
-      .URLByAppendingPathExtension("mp4")
-      .absoluteString
+  private var temporaryFilePath: URL? = {
+    do {
+      guard let temporaryFilePath = try? URL(fileURLWithPath: NSTemporaryDirectory())
+        .appendingPathComponent("temporary-recording")
+        .appendingPathExtension("mp4")
+        .absoluteString else {
+          fatalError()
+      }
+      guard let temporaryFilepath = temporaryFilePath else { fatalError() }
+      if FileManager.default.fileExists(atPath: temporaryFilepath) {
+        try FileManager.default.removeItem(atPath: temporaryFilepath)
+      }
+      return URL(string: temporaryFilepath)
 
-    if NSFileManager.defaultManager().fileExistsAtPath(temporaryFilePath) {
-      do {
-        try NSFileManager.defaultManager().removeItemAtPath(temporaryFilePath)
-      } catch { }
-    }
-    return NSURL(string: temporaryFilePath)!
+    } catch { return nil }
   }()
 }
 
 extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
-  func captureOutput(
-    captureOutput: AVCaptureFileOutput!,
-    didStartRecordingToOutputFileAtURL fileURL: NSURL!,
+  func capture(
+    _ captureOutput: AVCaptureFileOutput!,
+    didStartRecordingToOutputFileAt fileURL: URL!,
                                        fromConnections connections: [AnyObject]!) {
     print("recording started")
   }
 
-  func captureOutput(
-    captureOutput: AVCaptureFileOutput!,
-    didFinishRecordingToOutputFileAtURL outputFileURL: NSURL!,
+  func capture(
+    _ captureOutput: AVCaptureFileOutput!,
+    didFinishRecordingToOutputFileAt outputFileURL: URL!,
                                         fromConnections connections: [AnyObject]!,
                                                         error: NSError!) {
     print("recording finished")
