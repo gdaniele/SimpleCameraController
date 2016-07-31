@@ -361,7 +361,6 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   private func connectCamera(_ previewView: UIView,
                              completion: ConnectCameraControllerCallback) {
-    session.sessionPreset = AVCaptureSessionPresetLow
     captureSessionMaker.addOutputsToSession(session,
                                             outputMode: outputMode,
                                             sessionQueue: sessionQueue,
