@@ -198,7 +198,10 @@ public class AVFoundationCameraController: NSObject, CameraController {
       print("Session is already running")
       return
     }
-    session.startRunning()
+
+    self.sessionQueue.async(execute: {
+      self.session.startRunning()
+    })
   }
 
   public func startVideoRecording(_ completion: VideoCaptureCallback = nil) {
