@@ -40,7 +40,6 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
                                       session: AVCaptureSession) throws {
     // add inputs and commit config
     session.beginConfiguration()
-    session.sessionPreset = AVCaptureSessionPresetHigh
 
     guard session.canAddInput(input) else {
       throw CameraControllerError.setupFailed
