@@ -22,7 +22,7 @@ protocol Camcorder {
 
 typealias CamcorderCallback = ((success: Bool, error: CamcorderError?) -> ())?
 
-public enum CamcorderError: ErrorProtocol {
+public enum CamcorderError: Error {
   case micError
   case micDenied
   case micRestricted
@@ -75,37 +75,30 @@ class AVCamcorder: NSObject, Camcorder {
 
   private var temporaryFilePath: URL? = {
     do {
-      guard let temporaryFilePath = try? URL(fileURLWithPath: NSTemporaryDirectory())
+      let temporaryFilePath = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent("temporary-recording")
         .appendingPathExtension("mp4")
-        .absoluteString else {
-          fatalError()
+        .absoluteString
+      if FileManager.default.fileExists(atPath: temporaryFilePath) {
+        try FileManager.default.removeItem(atPath: temporaryFilePath)
       }
-      guard let temporaryFilepath = temporaryFilePath else { fatalError() }
-      if FileManager.default.fileExists(atPath: temporaryFilepath) {
-        try FileManager.default.removeItem(atPath: temporaryFilepath)
-      }
-      return URL(string: temporaryFilepath)
+      return URL(string: temporaryFilePath)
 
     } catch { return nil }
   }()
 }
 
 extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
+  func capture(_ captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [AnyObject]!, error: Error!) {
+    print("recording finished")
+    guard let completion = videoCompletion else { return }
+    completion?(file: outputFileURL, error: error)
+  }
+
   func capture(
     _ captureOutput: AVCaptureFileOutput!,
     didStartRecordingToOutputFileAt fileURL: URL!,
                                        fromConnections connections: [AnyObject]!) {
     print("recording started")
-  }
-
-  func capture(
-    _ captureOutput: AVCaptureFileOutput!,
-    didFinishRecordingToOutputFileAt outputFileURL: URL!,
-                                        fromConnections connections: [AnyObject]!,
-                                                        error: NSError!) {
-    print("recording finished")
-    guard let completion = videoCompletion else { return }
-    completion?(file: outputFileURL, error: error)
   }
 }

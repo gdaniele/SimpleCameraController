@@ -19,7 +19,7 @@ import UIKit
  in iOS 9+.
  */
 public class AVFoundationCameraController: NSObject, CameraController {
-  private typealias CaptureSessionCallback = ((Bool, ErrorProtocol?)->())?
+  private typealias CaptureSessionCallback = ((Bool, Error?)->())?
 
   // MARK:-  Session management
   private let session: AVCaptureSession
@@ -43,7 +43,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
     self.camera = AVCamera.self
     self.captureSessionMaker = AVCaptureSessionMaker.self
     self.camcorder = AVCamcorder()
-    self.sessionQueue = DispatchQueue(label: "session queue", attributes: DispatchQueueAttributes.serial)
+    self.sessionQueue = DispatchQueue(label: "session queue")
 
     super.init()
   }
@@ -81,8 +81,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
         device.position == position
         }.first
 
-      guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice)
-        where preferredDevice is AVCaptureDevice else {
+      guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice),
+        preferredDevice is AVCaptureDevice else {
           throw CameraControllerAuthorizationError.notSupported
       }
 
@@ -103,11 +103,11 @@ public class AVFoundationCameraController: NSObject, CameraController {
         device.position == preferredPosition
         }.first
 
-      guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice)
-        where preferredDevice is AVCaptureDevice else {
+      guard let uPreferredDevice = (preferredDevice as? AVCaptureDevice),
+        preferredDevice is AVCaptureDevice else {
 
-          guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice)
-            where defaultDevice is AVCaptureDevice else {
+          guard let uDefaultDevice = (defaultDevice as? AVCaptureDevice),
+            defaultDevice is AVCaptureDevice else {
               throw CameraControllerAuthorizationError.notSupported
           }
           return uDefaultDevice
@@ -214,7 +214,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
     }
 
     assertRunningAndAuthorized({ [weak self] success, error in
-      guard let strongSelf = self where success && error == nil else {
+      guard let strongSelf = self,
+        success && error == nil else {
         completion?(file: nil, error: error ?? CameraControllerError.setupFailed)
         return
       }
@@ -254,7 +255,8 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   public func takePhoto(_ completion: ImageCaptureCallback) {
     assertRunningAndAuthorized({ [weak self] success, error in
-      guard let strongSelf = self where success && error == nil else {
+      guard let strongSelf = self,
+        success && error == nil else {
         completion?(image: nil, error: error ?? CameraControllerError.setupFailed)
         return
       }
@@ -293,7 +295,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
       // We need to dispatch to the main thread here
       // because our preview layer is backed by UIKit
       // which runs on the main thread
-      let currentStatusBarOrientation = UIApplication.shared().statusBarOrientation
+      let currentStatusBarOrientation = UIApplication.shared.statusBarOrientation
 
       guard let connection = previewLayer?.connection,
         let newOrientation =
@@ -311,7 +313,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
   /// Helper for take photo, record video
   /// Checks running status
   /// Checks authorization status
-  private func assertRunningAndAuthorized(_ completion: (success: Bool, error: ErrorProtocol?) -> ()) {
+  private func assertRunningAndAuthorized(_ completion: (success: Bool, error: Error?) -> ()) {
     guard setupResult == .Running else {
       switch AVAuthorizer.videoStatus {
       case .authorized:
@@ -333,7 +335,7 @@ public class AVFoundationCameraController: NSObject, CameraController {
 
   // Adds session to preview layer
   private func addPreviewLayerToView(_ previewView: UIView,
-                                     completion: ((Bool, ErrorProtocol?) -> ())?) {
+                                     completion: ((Bool, Error?) -> ())?) {
     guard !(previewView.layer.sublayers?.first is AVCaptureVideoPreviewLayer) else {
       return
     }

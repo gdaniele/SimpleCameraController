@@ -29,7 +29,7 @@ public class PreviewView: UIView {
   }
 
   internal func orientationChanged() {
-    let deviceOrientation = UIApplication.shared().statusBarOrientation
+    let deviceOrientation = UIApplication.shared.statusBarOrientation
 
     guard let orientation = AVCaptureVideoOrientationTransformer
       .videoOrientationFromUIInterfaceOrientation(deviceOrientation)
@@ -38,7 +38,7 @@ public class PreviewView: UIView {
     }
 
     guard let layer = previewLayer,
-      let connection = layer.connection where connection.isVideoOrientationSupported else {
+      let connection = layer.connection, connection.isVideoOrientationSupported else {
         return
     }
 

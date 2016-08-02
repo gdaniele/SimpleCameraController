@@ -36,9 +36,9 @@ public protocol CameraController {
   func stopCaptureSession()
 }
 
-public typealias ImageCaptureCallback = ((image: UIImage?, error: ErrorProtocol?) -> ())?
-public typealias VideoCaptureCallback = ((file: URL?, error: ErrorProtocol?) -> ())?
-public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: ErrorProtocol?)-> ())?
+public typealias ImageCaptureCallback = ((image: UIImage?, error: Error?) -> ())?
+public typealias VideoCaptureCallback = ((file: URL?, error: Error?) -> ())?
+public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: Error?)-> ())?
 
 // MARK:- State
 
@@ -105,7 +105,7 @@ public enum CameraSupportedFeature {
  `CameraControllerError` represents CameraController API-level error resulting from incorrect usage
  or other failures
  */
-public enum CameraControllerError: ErrorProtocol {
+public enum CameraControllerError: Error {
   case imageCaptureFailed
   case notRunning
   case setupFailed
@@ -121,7 +121,7 @@ public enum CameraControllerError: ErrorProtocol {
  Camera controller may fail to function due to a variety of setup and permissions errors
  represented in this enum.
  */
-public enum CameraControllerAuthorizationError: ErrorProtocol {
+public enum CameraControllerAuthorizationError: Error {
   case notAuthorized
   case restricted
   case notSupported
