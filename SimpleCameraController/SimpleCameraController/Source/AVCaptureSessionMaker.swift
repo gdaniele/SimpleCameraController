@@ -8,11 +8,11 @@
 
 import AVFoundation
 
-internal typealias AudioOutputCallback = ((audioOutput: AVCaptureAudioDataOutput?) -> ())?
-internal typealias StillImageOutputCallback = ((imageOutput: AVCaptureStillImageOutput?) -> ())?
-internal typealias MovieFileOutputCallback = ((movieFileOutput: AVCaptureMovieFileOutput?) -> ())?
-internal typealias CaptureSessionCallback = ((movieFileOutput: AVCaptureMovieFileOutput?,
-  imageOutput: AVCaptureStillImageOutput?) -> ())?
+internal typealias AudioOutputCallback = ((_ audioOutput: AVCaptureAudioDataOutput?) -> ())?
+internal typealias StillImageOutputCallback = ((_ imageOutput: AVCaptureStillImageOutput?) -> ())?
+internal typealias MovieFileOutputCallback = ((_ movieFileOutput: AVCaptureMovieFileOutput?) -> ())?
+internal typealias CaptureSessionCallback = ((_ movieFileOutput: AVCaptureMovieFileOutput?,
+  _ imageOutput: AVCaptureStillImageOutput?) -> ())?
 
 protocol CaptureSessionMaker {
   static func setInputsForVideoDevice(_ videoDevice: AVCaptureDevice,
@@ -83,8 +83,8 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
       }
       session.commitConfiguration()
       DispatchQueue.main.async(execute: {
-        completion?(movieFileOutput: movieFileOutput,
-          imageOutput: stillImageOutput)
+        completion?(movieFileOutput,
+          stillImageOutput)
       })
     })
   }
@@ -100,7 +100,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
       session.commitConfiguration()
 
       DispatchQueue.main.async(execute: {
-        completion?(movieFileOutput: movieFileOutput)
+        completion?(movieFileOutput)
       })
     })
   }
@@ -121,7 +121,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
       session.commitConfiguration()
 
       DispatchQueue.main.async(execute: {
-        completion?(imageOutput: stillImageOutput)
+        completion?(stillImageOutput)
       })
     })
   }
@@ -129,7 +129,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   // MARK: Private
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addAudioInputToSession(_ session: AVCaptureSession) {
+  fileprivate static func addAudioInputToSession(_ session: AVCaptureSession) {
     guard let mic = AVCaptureDevice.defaultDevice(withMediaType: AVMediaTypeAudio) else {
       return
     }
@@ -144,7 +144,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addMovieFileOutputToSession(_ session: AVCaptureSession)
+  fileprivate static func addMovieFileOutputToSession(_ session: AVCaptureSession)
     -> AVCaptureMovieFileOutput {
     let movieFileOutput = AVCaptureMovieFileOutput()
     movieFileOutput.maxRecordedDuration = CMTimeMakeWithSeconds(10, 30)
@@ -156,7 +156,7 @@ struct AVCaptureSessionMaker: CaptureSessionMaker {
   }
 
   /// Important: This is a helper function and must be used in conjunction with session queue work
-  private static func addStillImageOutputToSession(_ session: AVCaptureSession)
+  fileprivate static func addStillImageOutputToSession(_ session: AVCaptureSession)
     -> AVCaptureStillImageOutput {
       let stillImageOutput = AVCaptureStillImageOutput()
 

@@ -20,7 +20,7 @@ protocol Camcorder {
                           completion: VideoCaptureCallback)
 }
 
-typealias CamcorderCallback = ((success: Bool, error: CamcorderError?) -> ())?
+typealias CamcorderCallback = ((_ success: Bool, _ error: CamcorderError?) -> ())?
 
 public enum CamcorderError: Error {
   case micError
@@ -30,10 +30,10 @@ public enum CamcorderError: Error {
 }
 
 class AVCamcorder: NSObject, Camcorder {
-  private let authorizer: Authorizer.Type = AVAuthorizer.self
-  private let sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
+  fileprivate let authorizer: Authorizer.Type = AVAuthorizer.self
+  fileprivate let sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 
-  private var videoCompletion: VideoCaptureCallback? =  nil
+  fileprivate var videoCompletion: VideoCaptureCallback? =  nil
 
   func startVideoRecording(_ completion: VideoCaptureCallback = nil,
                            movieFileOutput: AVCaptureMovieFileOutput,
@@ -60,7 +60,7 @@ class AVCamcorder: NSObject, Camcorder {
 
   // MARK: Private
 
-  private static func createMovieOutput(_ session: AVCaptureSession) -> AVCaptureMovieFileOutput {
+  fileprivate static func createMovieOutput(_ session: AVCaptureSession) -> AVCaptureMovieFileOutput {
     let movieOutput = AVCaptureMovieFileOutput()
     movieOutput.movieFragmentInterval = kCMTimeInvalid
 
@@ -73,7 +73,7 @@ class AVCamcorder: NSObject, Camcorder {
 
   // MARK: Private lazy
 
-  private var temporaryFilePath: URL? = {
+  fileprivate var temporaryFilePath: URL? = {
     do {
       let temporaryFilePath = URL(fileURLWithPath: NSTemporaryDirectory())
         .appendingPathComponent("temporary-recording")
@@ -89,16 +89,14 @@ class AVCamcorder: NSObject, Camcorder {
 }
 
 extension AVCamcorder: AVCaptureFileOutputRecordingDelegate {
-  func capture(_ captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [AnyObject]!, error: Error!) {
+
+  func capture(_ captureOutput: AVCaptureFileOutput!, didFinishRecordingToOutputFileAt outputFileURL: URL!, fromConnections connections: [Any]!, error: Error!) {
     print("recording finished")
     guard let completion = videoCompletion else { return }
-    completion?(file: outputFileURL, error: error)
+    completion?(outputFileURL, error)
   }
 
-  func capture(
-    _ captureOutput: AVCaptureFileOutput!,
-    didStartRecordingToOutputFileAt fileURL: URL!,
-                                       fromConnections connections: [AnyObject]!) {
+  func capture(_ captureOutput: AVCaptureFileOutput!, didStartRecordingToOutputFileAt fileURL: URL!, fromConnections connections: [Any]!) {
     print("recording started")
   }
 }

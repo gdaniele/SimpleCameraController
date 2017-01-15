@@ -9,7 +9,7 @@
 import AVFoundation
 import UIKit
 
-public class PreviewView: UIView {
+open class PreviewView: UIView {
   override public init(frame: CGRect) {
     super.init(frame: frame)
 
@@ -45,7 +45,7 @@ public class PreviewView: UIView {
     connection.videoOrientation = orientation
   }
 
-  public override func layoutSubviews() {
+  open override func layoutSubviews() {
     super.layoutSubviews()
 
     guard let previewLayer = previewLayer else { return }
