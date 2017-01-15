@@ -26,7 +26,7 @@ protocol Camera {
 }
 
 class AVCamera: Camera {
-  private static var sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
+  fileprivate static var sessionMaker: CaptureSessionMaker.Type = AVCaptureSessionMaker.self
 
   static var backCaptureDevice: AVCaptureDevice? {
     return try? AVFoundationCameraController.deviceWithMediaType(AVMediaTypeVideo, position: .back)
@@ -93,18 +93,18 @@ class AVCamera: Camera {
         .captureStillImageAsynchronously(from: connection,
           completionHandler: { imageDataSampleBuffer, receivedError in
             guard receivedError == nil else {
-              completion?(image: nil, error: receivedError!)
+              completion?(nil, receivedError!)
               return
             }
             if let uImageDataBuffer = imageDataSampleBuffer {
               let imageData = AVCaptureStillImageOutput
                 .jpegStillImageNSDataRepresentation(uImageDataBuffer)
               guard let image = UIImage(data: imageData!) else {
-                completion?(image: nil, error: CameraControllerError.imageCaptureFailed)
+                completion?(nil, CameraControllerError.imageCaptureFailed)
                 return
               }
               DispatchQueue.main.async(execute: {
-                completion?(image: image, error: nil)
+                completion?(image, nil)
                 return
               })
             }
@@ -113,7 +113,7 @@ class AVCamera: Camera {
   }
 
   // MARK: Private
-  private static func getDevice(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
+  fileprivate static func getDevice(_ position: AVCaptureDevicePosition) -> AVCaptureDevice? {
     switch position {
     case .back:
       return backCaptureDevice

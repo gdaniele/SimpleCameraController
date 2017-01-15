@@ -21,8 +21,8 @@ protocol Authorizer {
 }
 
 struct AVAuthorizer: Authorizer {
-  private static let camera: Camera.Type = AVCamera.self
-  private static let authorizationBlock: (granted: Bool, block: AuthorizationBlock) -> ()
+  fileprivate static let camera: Camera.Type = AVCamera.self
+  fileprivate static let authorizationBlock: (_ granted: Bool, _ block: AuthorizationBlock) -> ()
     = { granted, block in
       DispatchQueue.main.async(execute: {
         block?(granted)
@@ -48,14 +48,14 @@ struct AVAuthorizer: Authorizer {
   static func requestAccessForAudio(_ completion: ((Bool) -> ())?) {
     AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeAudio,
                                               completionHandler: {
-                                                authorizationBlock(granted: $0, block: completion)
+                                                authorizationBlock($0, completion)
     })
   }
 
   static func requestAccessForVideo(_ completion: ((Bool) -> ())?) {
     AVCaptureDevice.requestAccess(forMediaType: AVMediaTypeVideo,
                                               completionHandler: {
-                                                authorizationBlock(granted: $0, block: completion)
+                                                authorizationBlock($0, completion)
     })
   }
 }
