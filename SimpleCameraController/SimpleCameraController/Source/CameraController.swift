@@ -36,9 +36,9 @@ public protocol CameraController {
   func stopCaptureSession()
 }
 
-public typealias ImageCaptureCallback = ((image: UIImage?, error: Error?) -> ())?
-public typealias VideoCaptureCallback = ((file: URL?, error: Error?) -> ())?
-public typealias ConnectCameraControllerCallback = ((didSucceed: Bool, error: Error?)-> ())?
+public typealias ImageCaptureCallback = ((_ image: UIImage?, _ error: Error?) -> ())?
+public typealias VideoCaptureCallback = ((_ file: URL?, _ error: Error?) -> ())?
+public typealias ConnectCameraControllerCallback = ((_ didSucceed: Bool, _ error: Error?)-> ())?
 
 // MARK:- State
 
