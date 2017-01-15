@@ -28,7 +28,26 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "B345AB7A1CC13BA600CEC02F"
+               BuildableName = "SimpleCameraControllerTests.xctest"
+               BlueprintName = "SimpleCameraControllerTests"
+               ReferencedContainer = "container:SimpleCameraController.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
+      <MacroExpansion>
+         <BuildableReference
+            BuildableIdentifier = "primary"
+            BlueprintIdentifier = "B345AB701CC13BA600CEC02F"
+            BuildableName = "SimpleCameraController.framework"
+            BlueprintName = "SimpleCameraController"
+            ReferencedContainer = "container:SimpleCameraController.xcodeproj">
+         </BuildableReference>
+      </MacroExpansion>
       <AdditionalOptions>
       </AdditionalOptions>
    </TestAction>

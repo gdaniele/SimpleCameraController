@@ -22,9 +22,7 @@ before_deploy:
 - carthage archive $FRAMEWORK_NAME
 
 script:
-- xcodebuild test -project SimpleCameraController/SimpleCameraController.xcodeproj
-  -scheme SimpleCameraController -destination "platform=iOS Simulator,name=iPhone
-  7"
+- xcodebuild test -project SimpleCameraController/SimpleCameraController.xcodeproj -scheme SimpleCameraController -destination "platform=iOS Simulator,name=iPhone7"
 
 deploy:
   skip_cleanup: true
